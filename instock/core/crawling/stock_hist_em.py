@@ -38,6 +38,22 @@ def stock_zh_a_spot_em() -> pd.DataFrame:
     if not data_json["data"]["diff"]:
         return pd.DataFrame()
     temp_df = pd.DataFrame(data_json["data"]["diff"])
+
+    allStockCounts=len(temp_df);
+    temp_df=temp_df.drop(temp_df[(temp_df['f12'].str.startswith("30"))].index)
+    all30Counts=allStockCounts-len(temp_df)
+    temp_df=temp_df.drop(temp_df[(temp_df['f12'].str.startswith("68"))].index)
+    all68Counts=allStockCounts-all30Counts-len(temp_df)
+    temp_df=temp_df.drop(temp_df[(temp_df['f12'].str.startswith("8"))].index)
+    all8Counts=allStockCounts-all30Counts-all68Counts-len(temp_df)
+    temp_df=temp_df.drop(temp_df[(temp_df['f14'].str.startswith("*ST"))].index)
+    temp_df=temp_df.drop(temp_df[(temp_df['f14'].str.startswith("ST"))].index)
+    temp_df=temp_df.drop(temp_df[(temp_df['f14'].str.endswith("退"))].index)
+
+    allSTCounts=allStockCounts-all30Counts-all68Counts-all8Counts-len(temp_df)
+    print("所有股票数据长度:{0} 创业:{1} 科创:{2} 北交:{3} ST *ST:{5} 无ST深沪:{4}"
+          .format(allStockCounts,all30Counts,all68Counts,all8Counts,len(temp_df),allSTCounts))
+
     temp_df.columns = [
         "最新价",
         "涨跌幅",
