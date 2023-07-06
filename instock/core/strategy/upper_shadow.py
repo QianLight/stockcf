@@ -9,7 +9,6 @@ def check(code_name, data, date=None, ma_short=30, ma_long=250, threshold=1):
     if len(data.index) < ma_long:
         return False
 
-
     data = data.tail(n=threshold)
 
     if data['close'].values<data['open'].values:

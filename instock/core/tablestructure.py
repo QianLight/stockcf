@@ -331,7 +331,7 @@ TABLE_CN_STOCK_STRATEGIES = [
      'columns': _tmp_columns},
     {'name': 'cn_stock_strategy_low_atr', 'cn': '低ATR成长', 'size': 70, 'func': low_atr.check_low_increase,
      'columns': _tmp_columns},
-    {'name': 'cn_upper_shadow', 'cn': '上影线', 'size': 70, 'func': upper_shadow.check,
+    {'name': 'cn_stock_strategy_upper_shadow', 'cn': '上影线', 'size': 70, 'func': upper_shadow.check,
      'columns': _tmp_columns}
 ]
 
