@@ -22,8 +22,8 @@ import init_job as bj
 import basic_data_daily_job as hdj
 import basic_data_other_daily_job as hdtj
 import indicators_data_daily_job as gdj
-import strategy_data_daily_job as sdj
-import backtest_data_daily_job as bdj
+import self_strategy_data_daily_job as sdj
+import self_backtest_data_daily_job as bdj
 import klinepattern_data_daily_job as kdj
 
 __author__ = 'myh '
