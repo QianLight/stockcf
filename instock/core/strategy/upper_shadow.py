@@ -1,4 +1,4 @@
-def check(code_name, data, date=None, ma_short=30, ma_long=60, threshold=60):
+def check(code_name, data, date=None, ma_short=30, ma_long=7, threshold=60):
     if date is None:
         end_date = code_name[0]
     else:
@@ -11,6 +11,9 @@ def check(code_name, data, date=None, ma_short=30, ma_long=60, threshold=60):
 
     data = data.tail(n=threshold)
     data3 = data.tail(n=3)
+
+    if data.iloc[-4]['p_change']>9.8:#前天涨停了 不参与
+       return False
 
     ratio =data3["turnover"].values/data.iloc[-4]['turnover']
     #ration3=ratio.mean()
