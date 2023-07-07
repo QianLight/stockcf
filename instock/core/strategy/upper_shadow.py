@@ -1,4 +1,4 @@
-def check(code_name, data, date=None, ma_short=30, ma_long=250, threshold=60):
+def check(code_name, data, date=None, ma_short=30, ma_long=60, threshold=60):
     if date is None:
         end_date = code_name[0]
     else:
@@ -10,6 +10,16 @@ def check(code_name, data, date=None, ma_short=30, ma_long=250, threshold=60):
         return False
 
     data = data.tail(n=threshold)
+    data3 = data.tail(n=3)
+
+    ratio =data3["turnover"].values/data.iloc[-4]['turnover']
+    #ration3=ratio.mean()
+    if ratio[-3]>4 or ratio[-2]>4:
+        return True
+    return False
+
+
+
 
     lastClose= data.iloc[-1]['close']
     low = data['low'].values.min()
