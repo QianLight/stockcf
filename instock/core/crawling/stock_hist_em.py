@@ -33,7 +33,10 @@ def stock_zh_a_spot_em() -> pd.DataFrame:
         "fields": "f2,f3,f4,f5,f6,f7,f8,f9,f10,f11,f12,f14,f15,f16,f17,f18,f20,f21,f22,f23,f24,f25,f26,f37,f38,f39,f40,f41,f45,f46,f48,f49,f57,f61,f100,f112,f113,f114,f115,f221",
         "_": "1623833739532",
     }
-    r = requests.get(url, params=params)
+    s = requests.session()
+    s.keep_alive = False
+    r=s.get(url, params=params)
+    #r = requests.get(url, params=params)
     data_json = r.json()
     if not data_json["data"]["diff"]:
         return pd.DataFrame()
@@ -294,8 +297,13 @@ def stock_zh_a_hist(
         "end": end_date,
         "_": "1623766962675",
     }
+    #s = requests.session()
+    #s.keep_alive = False
+    #r=s.get(url, params=params)
     r = requests.get(url, params=params)
+
     data_json = r.json()
+    r.close()
     if not (data_json["data"] and data_json["data"]["klines"]):
         return pd.DataFrame()
     temp_df = pd.DataFrame(
