@@ -38,6 +38,8 @@ def stock_zh_a_spot_em() -> pd.DataFrame:
     r=s.get(url, params=params)
     #r = requests.get(url, params=params)
     data_json = r.json()
+    r.close()
+
     if not data_json["data"]["diff"]:
         return pd.DataFrame()
     temp_df = pd.DataFrame(data_json["data"]["diff"])
@@ -57,7 +59,7 @@ def stock_zh_a_spot_em() -> pd.DataFrame:
     print("所有股票数据长度:{0} 创业:{1} 科创:{2} 北交:{3} ST *ST:{5} 无ST深沪:{4}"
           .format(allStockCounts,all30Counts,all68Counts,all8Counts,len(temp_df),allSTCounts))
     #temp_df = temp_df.drop(temp_df[(temp_df['f12'].str.startswith("001360")==False)].index)
-    #temp_df = temp_df.tail(n=1)
+    temp_df = temp_df.tail(n=1)
     #temp_df=temp_df._append(temp_df1)
     temp_df.columns = [
         "最新价",

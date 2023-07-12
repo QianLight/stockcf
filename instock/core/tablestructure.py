@@ -15,6 +15,7 @@ from instock.core.strategy import low_backtrace_increase
 from instock.core.strategy import keep_increasing
 from instock.core.strategy import high_tight_flag
 from instock.core.strategy import upper_shadow
+from instock.core.strategy import reverse_benchmark
 
 __author__ = 'myh '
 __date__ = '2023/3/10 '
@@ -336,6 +337,8 @@ TABLE_CN_STOCK_STRATEGIES = [
     {'name': 'cn_stock_strategy_low_atr', 'cn': '低ATR成长', 'size': 70, 'func': low_atr.check_low_increase,
      'columns': _tmp_columns},
     {'name': 'cn_stock_strategy_upper_shadow', 'cn': '上影线', 'size': 70, 'func': upper_shadow.check,
+     'columns': _tmp_columns},
+    {'name': 'cn_stock_strategy_reverse_benchmark', 'cn': '逆大盘', 'size': 70, 'func': reverse_benchmark.check,
      'columns': _tmp_columns}
 ]
 
