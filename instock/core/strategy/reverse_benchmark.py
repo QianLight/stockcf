@@ -12,10 +12,12 @@ def check(code_name, data, date=None, ma_short=30, ma_long=7, threshold=60):
 
     data = data.tail(n=1)
     benchMarkData=globaldata.GetBenchMark()
-    dayData=benchMarkData[date]
-    closebench=dayData["close"].values
 
-    nowData=data.iloc[-1]['close']
+    mask = (benchMarkData['date'] == end_date)
+    benchMarkData1 = benchMarkData.loc[mask]
+    closebench=benchMarkData1.iloc[-1]['ups_downs']
+
+    nowData=data.iloc[-1]['ups_downs']
     if closebench<0 and nowData>=0:
         return True;
     return False
