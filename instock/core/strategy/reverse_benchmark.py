@@ -18,6 +18,9 @@ def check(code_name, data, date=None, ma_short=30, ma_long=7, threshold=60):
     closebench=benchMarkData1.iloc[-1]['ups_downs']
 
     nowData=data.iloc[-1]['ups_downs']
-    if closebench<0 and nowData>=0:
+    if closebench<0 and nowData>0:
         return True;
+    elif closebench>0 and nowData<0:
+        return True;
+
     return False
