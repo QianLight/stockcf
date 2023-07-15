@@ -57,7 +57,7 @@ class stock_hist_data(metaclass=singleton_type):
                             _data[stock] = __data
 
                         nBackIndex += 1
-                        print(f"stock_hist_data.Back：future {date} {stock[2]}  {nBackIndex}/ {nAllCounts}")
+                        #print(f"stock_hist_data.Back：future {date} {stock[2]}  {nBackIndex}/ {nAllCounts}")
                     except Exception as e:
                         logging.error(f"singleton.stock_hist_data处理异常：{stock[1]}代码{e}")
         except Exception as e:

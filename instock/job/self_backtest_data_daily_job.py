@@ -91,7 +91,7 @@ def run_check(stocks, data_all, date, backtest_column, workers=40):
                         data[stock] = _data_
 
                     nBackIndex+=1
-                    print(f"backtest_data_daily_job.Back：future {date} {stock[2]}  {nBackIndex}/ {nAllCounts}")
+                    #print(f"backtest_data_daily_job.Back：future {date} {stock[2]}  {nBackIndex}/ {nAllCounts}")
 
                 except Exception as e:
                     logging.error(f"backtest_data_daily_job.run_check处理异常：{stock[1]}代码{e}")

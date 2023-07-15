@@ -78,7 +78,7 @@ def run_check(strategy_fun, table_name, stocks, date, workers=40):
                         data.append(stock)
 
                     nBackIndex+=1
-                    print(f"strategy_fun.Back：future {date} {stock[2]}  {nBackIndex}/ {nAllCounts}")
+                    #print(f"strategy_fun.Back：future {date} {stock[2]}  {nBackIndex}/ {nAllCounts}")
 
                 except Exception as e:
                     logging.error(f"strategy_data_daily_job.run_check处理异常：{stock[1]}代码{e}策略{table_name}")
