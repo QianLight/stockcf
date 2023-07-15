@@ -73,6 +73,10 @@ def process(table, data_all, date, backtest_column):
 
 def run_check(stocks, data_all, date, backtest_column, workers=40):
     data = {}
+
+    nAllCounts=len(stocks)
+    nBackIndex=0;
+
     try:
         with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:
             future_to_data = {executor.submit(rate.get_rates, stock,
@@ -84,6 +88,10 @@ def run_check(stocks, data_all, date, backtest_column, workers=40):
                     _data_ = future.result()
                     if _data_ is not None:
                         data[stock] = _data_
+
+                    nBackIndex+=1
+                    print(f"backtest_data_daily_job.Back：future {date} {stock[2]}  {nBackIndex}/ {nAllCounts}")
+
                 except Exception as e:
                     logging.error(f"backtest_data_daily_job.run_check处理异常：{stock[1]}代码{e}")
     except Exception as e:

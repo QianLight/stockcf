@@ -13,10 +13,8 @@ import instock.lib.run_template as runt
 import instock.core.tablestructure as tbs
 import instock.lib.database as mdb
 import instock.core.stockfetch as stf
+import instock.lib.globaldata as globaldata
 from instock.core.singleton_stock import stock_data
-import instock.lib.trade_time as trd
-
-import datetime
 
 __author__ = 'myh '
 __date__ = '2023/3/10 '
@@ -72,12 +70,8 @@ def save_nph_etf_spot_data(date, before=True):
 
 
 def main():
-    #runt.run_with_args(save_nph_stock_spot_data)
-    #runt.run_with_args(save_nph_etf_spot_data)
-
-    run_date, run_date_nph = trd.get_trade_date_last()
-    save_nph_stock_spot_data(run_date_nph,False)
-    save_nph_etf_spot_data(run_date_nph,False)
+    runt.run_with_args(save_nph_stock_spot_data,False)
+    #runt.run_with_args(save_nph_etf_spot_data,False)
 
 
 # main函数入口

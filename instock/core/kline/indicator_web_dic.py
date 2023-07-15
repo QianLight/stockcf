@@ -60,7 +60,7 @@ indicators_dic = [
         "desc": """
         <a href="https://www.ljjyy.com/archives/2023/04/100692.html" rel="nofollow" target="_blank">价格动量指标(CR)</a>
     """,
-        "dic": ("cr", "cr-ma1", "cr-ma2", "cr-ma3")
+        "dic": ("cr", "cr_ma1", "cr_ma2", "cr_ma3")
     }, {
         "title": "RSI",
         "desc": """

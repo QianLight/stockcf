@@ -25,7 +25,7 @@ def get_plot_kline(code, stock, date, stock_name):
     plot_list = []
     threshold = 360
     try:
-        data = idr.get_indicators(stock, date, threshold=threshold)
+        data = idr.get_indicators(stock,code=code,date=date, threshold=threshold)
         if data is None:
             return None
 

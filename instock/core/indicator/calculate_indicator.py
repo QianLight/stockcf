@@ -5,13 +5,23 @@ import logging
 import pandas as pd
 import numpy as np
 import talib as tl
+import os.path
+import datetime
+import instock.core.tablestructure as tbs
 
 __author__ = 'myh '
 __date__ = '2023/3/10 '
 
+cpath_current = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+stock_indicator_cache_path = os.path.join(cpath_current, 'cache', 'indicator')
+if not os.path.exists(stock_indicator_cache_path):
+    os.makedirs(stock_indicator_cache_path)  # 创建多个文件夹结构。
 
-def get_indicators(data, end_date=None, threshold=120, calc_threshold=None):
+def get_indicators(data,code, end_date=None, threshold=120, calc_threshold=None):
     try:
+
+        data=get_indicatorsData(data,code)
+
         isCopy = False
         if end_date is not None:
             mask = (data['date'] <= end_date)
@@ -28,8 +38,30 @@ def get_indicators(data, end_date=None, threshold=120, calc_threshold=None):
         # test = data.copy()
         # test = stockstats.StockDataFrame.retype(test)  # 验证计算结果
 
-        with np.errstate(divide='ignore', invalid='ignore'):
+        if threshold is not None:
+            data = data.tail(n=threshold).copy()
+        return data
+    except Exception as e:
+        logging.error(f"calculate_indicator.get_indicators处理异常：{data['code']}代码{e}")
+    return None
 
+def get_indicatorsData(data,code):
+    try:
+        now_time1 = datetime.datetime.now()
+        now_date = now_time1.date().strftime("%Y%m%d")
+        cache_dir = os.path.join(stock_indicator_cache_path, now_date)
+        # 如果没有文件夹创建一个。月文件夹和日文件夹。方便删除。
+        try:
+            if not os.path.exists(cache_dir):
+                os.makedirs(cache_dir)
+        except Exception:
+            pass
+        cache_file = os.path.join(cache_dir, "%s%s.gzip.pickle" % (code, tbs.ADJUST_TYPE))
+
+        if os.path.isfile(cache_file):
+            return pd.read_pickle(cache_file, compression="gzip")
+
+        with np.errstate(divide='ignore', invalid='ignore'):
             # macd
             data.loc[:, 'macd'], data.loc[:, 'macds'], data.loc[:, 'macdh'] = tl.MACD(
                 data['close'].values, fastperiod=12, slowperiod=26, signalperiod=9)
@@ -69,12 +101,12 @@ def get_indicators(data, end_date=None, threshold=120, calc_threshold=None):
             data['cr'].values[np.isnan(data['cr'].values)] = 0.0
             data['cr'].values[np.isinf(data['cr'].values)] = 0.0
             data['cr'] = data['cr'].values * 100
-            data.loc[:, 'cr-ma1'] = tl.MA(data['cr'].values, timeperiod=5)
-            data['cr-ma1'].values[np.isnan(data['cr-ma1'].values)] = 0.0
-            data.loc[:, 'cr-ma2'] = tl.MA(data['cr'].values, timeperiod=10)
-            data['cr-ma2'].values[np.isnan(data['cr-ma2'].values)] = 0.0
-            data.loc[:, 'cr-ma3'] = tl.MA(data['cr'].values, timeperiod=20)
-            data['cr-ma3'].values[np.isnan(data['cr-ma3'].values)] = 0.0
+            data.loc[:, 'cr_ma1'] = tl.MA(data['cr'].values, timeperiod=5)
+            data['cr_ma1'].values[np.isnan(data['cr_ma1'].values)] = 0.0
+            data.loc[:, 'cr_ma2'] = tl.MA(data['cr'].values, timeperiod=10)
+            data['cr_ma2'].values[np.isnan(data['cr_ma2'].values)] = 0.0
+            data.loc[:, 'cr_ma3'] = tl.MA(data['cr'].values, timeperiod=20)
+            data['cr_ma3'].values[np.isnan(data['cr_ma3'].values)] = 0.0
 
             # rsi
             data.loc[:, 'rsi'] = tl.RSI(data['close'].values, timeperiod=14)
@@ -403,13 +435,15 @@ def get_indicators(data, end_date=None, threshold=120, calc_threshold=None):
             data.loc[:, 'ma200'] = tl.MA(data['close'].values, timeperiod=200)
             data['ma200'].values[np.isnan(data['ma200'].values)] = 0.0
 
-        if threshold is not None:
-            data = data.tail(n=threshold).copy()
+        try:
+            data.to_pickle(cache_file, compression="gzip")
+        except Exception:
+            pass
+        # time.sleep(1)
         return data
     except Exception as e:
         logging.error(f"calculate_indicator.get_indicators处理异常：{data['code']}代码{e}")
     return None
-
 
 def get_indicator(code_name, data, stock_column, date=None, calc_threshold=90):
     try:
@@ -428,7 +462,7 @@ def get_indicator(code_name, data, stock_column, date=None, calc_threshold=90):
                 stock_data_list.append(0)
             return pd.Series(stock_data_list, index=stock_column)
 
-        idr_data = get_indicators(data, end_date=end_date, threshold=1, calc_threshold=calc_threshold)
+        idr_data = get_indicators(data,code=code,end_date=end_date, threshold=1, calc_threshold=calc_threshold)
 
         # 增加空判断，如果是空返回 0 数据。
         if idr_data is None:

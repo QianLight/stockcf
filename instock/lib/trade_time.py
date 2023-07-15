@@ -109,8 +109,23 @@ def is_open(now_time):
         return True
     return False
 
-
 def get_trade_hist_interval(date):
+    tmp_year, tmp_month, tmp_day = date.split("-")
+    now_time = datetime.datetime.now()
+    #date_end = datetime.datetime(int(tmp_year), int(tmp_month), int(tmp_day))
+    date_end=now_time
+    date_start = (date_end + datetime.timedelta(days=-(365 * 3))).strftime("%Y%m%d")
+    now_date = now_time.date()
+    is_trade_date_open_close_between = False
+    if date_end.date() == now_date:
+        if is_trade_date(now_date):
+            if is_open(now_time) and not is_close(now_time):
+                is_trade_date_open_close_between = True
+
+    return date_start, not is_trade_date_open_close_between
+
+
+def get_trade_hist_interval_dynamic(date):
     tmp_year, tmp_month, tmp_day = date.split("-")
     date_end = datetime.datetime(int(tmp_year), int(tmp_month), int(tmp_day))
     date_start = (date_end + datetime.timedelta(days=-(365 * 3))).strftime("%Y%m%d")

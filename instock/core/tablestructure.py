@@ -22,6 +22,8 @@ __date__ = '2023/3/10 '
 
 RATE_FIELDS_COUNT = 100  # N日收益率字段数目，即N值
 
+ADJUST_TYPE="qfq"
+
 TABLE_CN_STOCK_ATTENTION = {'name': 'cn_stock_attention', 'cn': '我的关注',
                             'columns': {'datetime': {'type': DATETIME, 'cn': '时间', 'size': 0},
                                         'code': {'type': NVARCHAR(6), 'cn': '代码', 'size': 60}}}
@@ -238,9 +240,9 @@ STOCK_STATS_DATA = {'name': 'calculate_indicator', 'cn': '股票统计/指标计
                                 'trix_20_sma': {'type': FLOAT, 'cn': 'trma', 'size': 70},
                                 'tema': {'type': FLOAT, 'cn': 'tema', 'size': 70},
                                 'cr': {'type': FLOAT, 'cn': 'cr', 'size': 70},
-                                'cr-ma1': {'type': FLOAT, 'cn': 'cr-ma1', 'size': 70},
-                                'cr-ma2': {'type': FLOAT, 'cn': 'cr-ma2', 'size': 70},
-                                'cr-ma3': {'type': FLOAT, 'cn': 'cr-ma3', 'size': 70},
+                                'cr_ma1': {'type': FLOAT, 'cn': 'cr_ma1', 'size': 70},
+                                'cr_ma2': {'type': FLOAT, 'cn': 'cr_ma2', 'size': 70},
+                                'cr_ma3': {'type': FLOAT, 'cn': 'cr_ma3', 'size': 70},
                                 'rsi_6': {'type': FLOAT, 'cn': 'rsi_6', 'size': 70},
                                 'rsi_12': {'type': FLOAT, 'cn': 'rsi_12', 'size': 70},
                                 'rsi': {'type': FLOAT, 'cn': 'rsi', 'size': 70},

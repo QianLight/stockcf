@@ -60,6 +60,10 @@ def run_check(stocks, date=None, workers=40):
     data = {}
     columns = tbs.STOCK_KLINE_PATTERN_DATA['columns']
     data_column = columns
+
+    nAllCounts=len(stocks)
+    nBackIndex=0;
+
     try:
         with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:
             future_to_data = {executor.submit(kpr.get_pattern_recognition, k, stocks[k], data_column, date=date): k for k in stocks}
@@ -69,6 +73,10 @@ def run_check(stocks, date=None, workers=40):
                     _data_ = future.result()
                     if _data_ is not None:
                         data[stock] = _data_
+
+                    nBackIndex+=1
+                    print(f"get_pattern_recognition.Back：future {date} {stock[2]}  {nBackIndex}/ {nAllCounts}")
+
                 except Exception as e:
                     logging.error(f"klinepattern_data_daily_job.run_check处理异常：{stock[1]}代码{e}")
     except Exception as e:

@@ -24,6 +24,8 @@ __date__ = '2023/3/10 '
 def prepare(date):
     try:
         stocks_data = stock_hist_data(date=date).get_data()
+        #print(f"stocks_data {date} {len(stocks_data)}")
+
         if stocks_data is None:
             return
         results = run_check(stocks_data, date=date)
@@ -64,6 +66,10 @@ def run_check(stocks, date=None, workers=40):
     columns.insert(0, 'code')
     columns.insert(0, 'date')
     data_column = columns
+
+    nAllCounts=len(stocks)
+    nBackIndex=0;
+
     try:
         with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:
             future_to_data = {executor.submit(idr.get_indicator, k, stocks[k], data_column, date=date): k for k in stocks}
@@ -71,8 +77,12 @@ def run_check(stocks, date=None, workers=40):
                 stock = future_to_data[future]
                 try:
                     _data_ = future.result()
+
                     if _data_ is not None:
                         data[stock] = _data_
+
+                    nBackIndex+=1
+                    print(f"calculate_indicator.Back：future {date} {stock[2]}  {nBackIndex}/ {nAllCounts}")
                 except Exception as e:
                     logging.error(f"indicators_data_daily_job.run_check处理异常：{stock[1]}代码{e}")
     except Exception as e:

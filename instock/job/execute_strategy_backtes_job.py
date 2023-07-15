@@ -19,7 +19,7 @@ if not os.path.exists(log_path):
 logging.basicConfig(format='%(asctime)s %(message)s', filename=os.path.join(log_path, 'stock_execute_job.log'))
 logging.getLogger().setLevel(logging.INFO)
 import init_job as bj
-import basic_data_daily_job as hdj
+import self_basic_data_daily_job as hdj
 import basic_data_other_daily_job as hdtj
 import indicators_data_daily_job as gdj
 import self_strategy_data_daily_job as sdj
@@ -40,7 +40,7 @@ def main():
     hdj.main()
     with concurrent.futures.ThreadPoolExecutor() as executor:
         # # 第3.1步创建股票其它基础数据表
-        executor.submit(hdtj.main)
+        #executor.submit(hdtj.main)
         # # 第3.2步创建股票指标数据表
         #executor.submit(gdj.main)
         # # # # 第4步创建股票k线形态表

@@ -11,6 +11,7 @@ sys.path.append(cpath)
 import instock.core.tablestructure as tbs
 import instock.core.stockfetch as stf
 
+BASIC_DATA_DAILYDATA=[]
 
 BenchMarkData=[]
 def GetBenchMark():

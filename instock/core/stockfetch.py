@@ -17,7 +17,7 @@ import instock.core.crawling.stock_dzjy_em as sde
 import instock.core.crawling.stock_hist_em as she
 import instock.core.crawling.stock_fund_em as sff
 import instock.core.crawling.stock_fhps_em as sfe
-
+import instock.lib.globaldata as globaldata
 
 __author__ = 'myh '
 __date__ = '2023/3/10 '
@@ -100,6 +100,7 @@ def fetch_stocks(date):
             data.insert(0, 'date', date.strftime("%Y-%m-%d"))
         data.columns = list(tbs.TABLE_CN_STOCK_SPOT['columns'])
         data = data.loc[data['code'].apply(is_a_stock)].loc[data['new_price'].apply(is_open)]
+        globaldata.BASIC_DATA_DAILYDATA=data
         return data
     except Exception as e:
         logging.error(f"stockfetch.fetch_stocks处理异常：{e}")
@@ -243,7 +244,7 @@ def fetch_etf_hist(data_base, date_start=None, date_end=None, adjust='qfq'):
 
 
 # 读取股票历史数据
-def fetch_stock_hist(data_base, date_start=None, is_cache=True):
+def fetch_stock_hist(data_base,stockAllData, date_start=None, is_cache=True):
     date = data_base[0]
     code = data_base[1]
 
@@ -251,7 +252,10 @@ def fetch_stock_hist(data_base, date_start=None, is_cache=True):
         date_start, is_cache = trd.get_trade_hist_interval(date)  # 提高运行效率，只运行一次
         # date_end = date_end.strftime("%Y%m%d")
     try:
-        data = stock_hist_cache(code, date_start, None, is_cache, 'qfq')
+        data = stock_hist_cache(code, date_start, None, is_cache, tbs.ADJUST_TYPE)
+        fetch_stock_hist_Replace(stockAllData,data)
+
+
         if data is not None:
             data.loc[:, 'p_change'] = tl.ROC(data['close'].values, 1)
             data['p_change'].values[np.isnan(data['p_change'].values)] = 0.0
@@ -259,6 +263,56 @@ def fetch_stock_hist(data_base, date_start=None, is_cache=True):
         return data
     except Exception as e:
         logging.error(f"stockfetch.fetch_stock_hist处理异常：{e}")
+    return None
+
+def fetch_stock_hist_Replace(data_base, data):
+    dataTime=data_base[0]
+    data.loc[data["date"] == dataTime, "open"] = data_base[11]
+    data.loc[data["date"] == dataTime, "close"] = data_base[3]
+    data.loc[data["date"] == dataTime, "high"] = data_base[12]
+    data.loc[data["date"] == dataTime, "low"] = data_base[13]
+    data.loc[data["date"] == dataTime, "volume"] = data_base[6]
+    data.loc[data["date"] == dataTime, "amount"] = data_base[7]
+    data.loc[data["date"] == dataTime, "amplitude"] = data_base[8]
+    data.loc[data["date"] == dataTime, "quote_change"] = data_base[4]
+    data.loc[data["date"] == dataTime, "ups_downs"] = data_base[5]
+    data.loc[data["date"] == dataTime, "turnover"] = data_base[9]
+
+
+# 增加读取股票缓存方法。加快处理速度。多线程解决效率
+def stock_hist_cache_pickle(code, date_start, date_end=None, is_cache=True, adjust=''):
+    cache_dir = os.path.join(stock_hist_cache_path, date_start[0:6], date_start)
+    # 如果没有文件夹创建一个。月文件夹和日文件夹。方便删除。
+    try:
+        if not os.path.exists(cache_dir):
+            os.makedirs(cache_dir)
+    except Exception:
+        pass
+    cache_file = os.path.join(cache_dir, "%s%s.gzip.pickle" % (code, adjust))
+    # 如果缓存存在就直接返回缓存数据。压缩方式。
+    try:
+        if os.path.isfile(cache_file):
+            return pd.read_pickle(cache_file, compression="gzip")
+        else:
+            if date_end is not None:
+                stock = she.stock_zh_a_hist(symbol=code, period="daily", start_date=date_start, end_date=date_end,
+                                            adjust=adjust)
+            else:
+                stock = she.stock_zh_a_hist(symbol=code, period="daily", start_date=date_start, adjust=adjust)
+
+            if stock is None or len(stock.index) == 0:
+                return None
+            stock.columns = tuple(tbs.CN_STOCK_HIST_DATA['columns'])
+            stock = stock.sort_index()  # 将数据按照日期排序下。
+            try:
+                if is_cache:
+                    stock.to_pickle(cache_file, compression="gzip")
+            except Exception:
+                pass
+            # time.sleep(1)
+            return stock
+    except Exception as e:
+        logging.error(f"stockfetch.stock_hist_cache处理异常：{code}代码{e}")
     return None
 
 
@@ -277,6 +331,7 @@ def stock_hist_cache(code, date_start, date_end=None, is_cache=True, adjust=''):
         if os.path.isfile(cache_file):
             return pd.read_pickle(cache_file, compression="gzip")
         else:
+            print(f"stock_hist_cache.From Server：future {code}")
             if date_end is not None:
                 stock = she.stock_zh_a_hist(symbol=code, period="daily", start_date=date_start, end_date=date_end,
                                             adjust=adjust)

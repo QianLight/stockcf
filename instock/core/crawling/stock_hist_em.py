@@ -33,10 +33,10 @@ def stock_zh_a_spot_em() -> pd.DataFrame:
         "fields": "f2,f3,f4,f5,f6,f7,f8,f9,f10,f11,f12,f14,f15,f16,f17,f18,f20,f21,f22,f23,f24,f25,f26,f37,f38,f39,f40,f41,f45,f46,f48,f49,f57,f61,f100,f112,f113,f114,f115,f221",
         "_": "1623833739532",
     }
-    s = requests.session()
-    s.keep_alive = False
-    r=s.get(url, params=params)
-    #r = requests.get(url, params=params)
+    #s = requests.session()
+    #s.keep_alive = False
+    #r=s.get(url, params=params)
+    r = requests.get(url, params=params)
     data_json = r.json()
     r.close()
 
@@ -59,7 +59,7 @@ def stock_zh_a_spot_em() -> pd.DataFrame:
     print("所有股票数据长度:{0} 创业:{1} 科创:{2} 北交:{3} ST *ST:{5} 无ST深沪:{4}"
           .format(allStockCounts,all30Counts,all68Counts,all8Counts,len(temp_df),allSTCounts))
     #temp_df = temp_df.drop(temp_df[(temp_df['f12'].str.startswith("001360")==False)].index)
-    #temp_df = temp_df.tail(n=1)
+    temp_df = temp_df.tail(n=1)
     #temp_df=temp_df._append(temp_df1)
     temp_df.columns = [
         "最新价",
