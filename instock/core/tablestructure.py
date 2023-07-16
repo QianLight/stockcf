@@ -21,6 +21,7 @@ from instock.core.strategy import shocklarge
 from instock.core.strategy import mabond_trade
 from instock.core.strategy import updown_trade
 from instock.core.strategy import increaselarge
+from instock.core.strategy import down_mabond_trade
 __author__ = 'myh '
 __date__ = '2023/3/10 '
 
@@ -354,6 +355,8 @@ TABLE_CN_STOCK_STRATEGIES = [
     {'name': 'cn_stock_strategy_updown_trade', 'cn': '上涨次数大于下跌', 'size': 70, 'func': updown_trade.check,
      'columns': _tmp_columns},
     {'name': 'cn_stock_strategy_mabond_trade', 'cn': '均线粘合', 'size': 70, 'func': mabond_trade.check,
+     'columns': _tmp_columns},
+    {'name': 'cn_stock_strategy_down_mabond_trade', 'cn': '均线粘合_有回踩均线需求', 'size': 70, 'func': down_mabond_trade.check,
      'columns': _tmp_columns}
 ]
 

@@ -1,0 +1,12 @@
+SELECT
+	NAME,
+	COUNT(*)
+FROM
+	cn_stock_strategy_shocklarge
+GROUP BY
+	NAME
+ORDER BY
+	COUNT(*) DESC
+
+
+SELECT* FROM cn_stock_strategy_shocklarge WHERE CODE="002812"
