@@ -16,6 +16,9 @@ from instock.core.strategy import keep_increasing
 from instock.core.strategy import high_tight_flag
 from instock.core.strategy import upper_shadow
 from instock.core.strategy import reverse_benchmark
+from instock.core.strategy import open_trade
+from instock.core.strategy import down10_trade
+from instock.core.strategy import mabond_trade
 
 __author__ = 'myh '
 __date__ = '2023/3/10 '
@@ -306,6 +309,7 @@ TABLE_CN_STOCK_INDICATORS = {'name': 'cn_stock_indicators', 'cn': '股票指标�
 TABLE_CN_STOCK_INDICATORS['columns'].update(STOCK_STATS_DATA['columns'])
 
 _tmp_columns = TABLE_CN_STOCK_FOREIGN_KEY['columns'].copy()
+#_tmp_columns.update({'industry': {'type': NVARCHAR(20), 'cn': '行业', 'size': 70}})
 _tmp_columns.update(TABLE_CN_STOCK_BACKTEST_DATA['columns'])
 
 TABLE_CN_STOCK_INDICATORS_BUY = {'name': 'cn_stock_indicators_buy', 'cn': '股票指标买入',
@@ -341,6 +345,12 @@ TABLE_CN_STOCK_STRATEGIES = [
     {'name': 'cn_stock_strategy_upper_shadow', 'cn': '上影线', 'size': 70, 'func': upper_shadow.check,
      'columns': _tmp_columns},
     {'name': 'cn_stock_strategy_reverse_benchmark', 'cn': '逆大盘', 'size': 70, 'func': reverse_benchmark.check,
+     'columns': _tmp_columns},
+    {'name': 'cn_stock_strategy_open_trade', 'cn': '开盘与当天的涨跌', 'size': 70, 'func': open_trade.check,
+     'columns': _tmp_columns},
+    {'name': 'cn_stock_strategy_down10_trade', 'cn': '跌停', 'size': 70, 'func': down10_trade.check,
+     'columns': _tmp_columns},
+    {'name': 'cn_stock_strategy_mabond_trade', 'cn': '均线粘合', 'size': 70, 'func': mabond_trade.check,
      'columns': _tmp_columns}
 ]
 

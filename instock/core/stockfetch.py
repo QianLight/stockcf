@@ -94,10 +94,14 @@ def fetch_stocks(date):
         data = she.stock_zh_a_spot_em()
         if data is None or len(data.index) == 0:
             return None
-        if date is None:
-            data.insert(0, 'date', datetime.datetime.now().strftime("%Y-%m-%d"))
-        else:
-            data.insert(0, 'date', date.strftime("%Y-%m-%d"))
+        #if date is None:
+        #    data.insert(0, 'date', datetime.datetime.now().strftime("%Y-%m-%d"))
+        #else:
+        #    data.insert(0, 'date', date.strftime("%Y-%m-%d"))
+
+        run_date, run_date_nph = trd.get_trade_date_last()
+        data.insert(0, 'date', run_date_nph.strftime("%Y-%m-%d"))
+
         data.columns = list(tbs.TABLE_CN_STOCK_SPOT['columns'])
         data = data.loc[data['code'].apply(is_a_stock)].loc[data['new_price'].apply(is_open)]
         globaldata.BASIC_DATA_DAILYDATA=data
@@ -244,7 +248,7 @@ def fetch_etf_hist(data_base, date_start=None, date_end=None, adjust='qfq'):
 
 
 # 读取股票历史数据
-def fetch_stock_hist(data_base,stockAllData, date_start=None, is_cache=True):
+def fetch_stock_hist(data_base,stockAllData=None, date_start=None, is_cache=True):
     date = data_base[0]
     code = data_base[1]
 
@@ -266,7 +270,17 @@ def fetch_stock_hist(data_base,stockAllData, date_start=None, is_cache=True):
     return None
 
 def fetch_stock_hist_Replace(data_base, data):
-    dataTime=data_base[0]
+    if data_base is None:
+        return
+
+    data['industry'] = [data_base[39]] * len(data)
+
+    dataTime = data_base[0]
+
+    data = data[data["date"] == dataTime]
+    if len(data)==0:
+        return
+
     data.loc[data["date"] == dataTime, "open"] = data_base[11]
     data.loc[data["date"] == dataTime, "close"] = data_base[3]
     data.loc[data["date"] == dataTime, "high"] = data_base[12]

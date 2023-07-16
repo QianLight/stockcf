@@ -66,7 +66,7 @@ def process(table, data_all, date, backtest_column):
 
         data_new = pd.DataFrame(results.values())
         mdb.update_db_from_df(data_new, table_name, ('date', 'code'))
-
+        print(f"backtest_data_daily_job：{date}  表 {table}")
     except Exception as e:
         logging.error(f"backtest_data_daily_job.process处理异常：{table}表{e}")
 
