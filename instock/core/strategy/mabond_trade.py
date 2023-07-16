@@ -57,10 +57,11 @@ def check(code_name, data, date=None, threshold=180):
     mean20_30 = abs(mean20 - mean30) / mean30
     mean20_60 = abs(mean20 - mean60) / mean60
 
+
     #if mean20>mean5 and
 
     targetValue=0.02
-    if abs(mean10_20) <=targetValue and  abs(mean10_30) <=targetValue and  mean10_60 < targetValue and \
+    if abs(mean5_10) <=targetValue and  abs(mean10_20) <=targetValue and  abs(mean10_30) <=targetValue and  mean10_60 < targetValue and \
             mean10_120 < targetValue and \
             mean20_60 < targetValue and \
             mean20_30<targetValue:

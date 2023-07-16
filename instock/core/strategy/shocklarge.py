@@ -12,7 +12,10 @@ def check(code_name, data, date=None, ma_short=30, ma_long=7, threshold=60):
 
     data = data.tail(n=1)
 
-    if data.iloc[-1]['open']<data.iloc[-1]['low']:
+    #if data.iloc[-1]['open']<data.iloc[-1]['low']:
+    #   return False
+
+    if data.iloc[-1]['quote_change']>9.8:
         return False
 
     #if data.iloc[-1]['quote_change']>5 and data.iloc[-1]['amplitude']>5:
