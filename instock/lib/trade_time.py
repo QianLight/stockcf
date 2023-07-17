@@ -122,7 +122,7 @@ def get_trade_hist_interval(date):
             if is_open(now_time) and not is_close(now_time):
                 is_trade_date_open_close_between = True
 
-    return date_start, not is_trade_date_open_close_between
+    return date_start, True
 
 
 def get_trade_hist_interval_dynamic(date):
