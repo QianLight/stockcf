@@ -7,7 +7,7 @@ import instock.core.stockfetch as stf
 import instock.core.tablestructure as tbs
 import instock.lib.trade_time as trd
 from instock.lib.singleton_type import singleton_type
-import progressbar
+from tqdm import tqdm
 
 __author__ = 'myh '
 __date__ = '2023/3/10 '
@@ -43,7 +43,7 @@ class stock_hist_data(metaclass=singleton_type):
         nAllCounts = len(stocks)
         nBackIndex = 0;
 
-        p = progressbar.ProgressBar(max_value=nAllCounts)
+        p = tqdm(total=nAllCounts)
 
         #print(f"stock_hist_data.Back：start {date} {nAllCounts}")
 
@@ -60,7 +60,7 @@ class stock_hist_data(metaclass=singleton_type):
                             _data[stock] = __data
 
                         nBackIndex += 1
-                        p.update(nBackIndex)
+                        p.update(1)
                         #print(f"stock_hist_data.Back：future {date} {stock[2]}  {nBackIndex}/ {nAllCounts}")
                     except Exception as e:
                         logging.error(f"singleton.stock_hist_data处理异常：{stock[1]}代码{e}")

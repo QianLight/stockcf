@@ -347,7 +347,8 @@ def stock_hist_cache(code, date_start, date_end=None, is_cache=True, adjust='',n
     if next_day is None:
       cache_dir = os.path.join(stock_hist_cache_path, date_start[0:6], date_start)
     else:
-      next_daystr= next_day.strftime("%Y%m%d")
+      next_daystr=next_day+datetime.timedelta(days=-(365 * 3))
+      next_daystr=next_daystr.strftime("%Y%m%d")
       cache_dir = os.path.join(stock_hist_cache_path, next_daystr[0:6], next_daystr)
 
     # 如果没有文件夹创建一个。月文件夹和日文件夹。方便删除。

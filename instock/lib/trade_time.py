@@ -117,10 +117,10 @@ def get_trade_hist_interval(date):
     date_start = (date_end + datetime.timedelta(days=-(365 * 3))).strftime("%Y%m%d")
     now_date = now_time.date()
     is_trade_date_open_close_between = False
-    if date_end.date() == now_date:
-        if is_trade_date(now_date):
-            if is_open(now_time) and not is_close(now_time):
-                is_trade_date_open_close_between = True
+    #if date_end.date() == now_date:
+    #    if is_trade_date(now_date):
+    #        if is_open(now_time) and not is_close(now_time):
+    #            is_trade_date_open_close_between = True
 
     return date_start, True
 
@@ -133,10 +133,10 @@ def get_trade_hist_interval_dynamic(date):
     now_time = datetime.datetime.now()
     now_date = now_time.date()
     is_trade_date_open_close_between = False
-    if date_end.date() == now_date:
-        if is_trade_date(now_date):
-            if is_open(now_time) and not is_close(now_time):
-                is_trade_date_open_close_between = True
+    #if date_end.date() == now_date:
+    #    if is_trade_date(now_date):
+    #        if is_open(now_time) and not is_close(now_time):
+    #            is_trade_date_open_close_between = True
 
     return date_start, not is_trade_date_open_close_between
 
