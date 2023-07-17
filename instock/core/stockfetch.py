@@ -104,6 +104,8 @@ def fetch_stocks(date):
 
         data.columns = list(tbs.TABLE_CN_STOCK_SPOT['columns'])
         data = data.loc[data['code'].apply(is_a_stock)].loc[data['new_price'].apply(is_open)]
+        print("过滤退市之后数量:{0}".format(len(data)))
+
         globaldata.BASIC_DATA_DAILYDATA=data
         return data
     except Exception as e:
@@ -248,7 +250,7 @@ def fetch_etf_hist(data_base, date_start=None, date_end=None, adjust='qfq'):
 
 
 # 读取股票历史数据
-def fetch_stock_hist(data_base,stockAllData=None, date_start=None, is_cache=True):
+def fetch_stock_hist(data_base,stockAllData=None, date_start=None, is_cache=True,next_day=None):
     date = data_base[0]
     code = data_base[1]
 
@@ -256,9 +258,9 @@ def fetch_stock_hist(data_base,stockAllData=None, date_start=None, is_cache=True
         date_start, is_cache = trd.get_trade_hist_interval(date)  # 提高运行效率，只运行一次
         # date_end = date_end.strftime("%Y%m%d")
     try:
-        data = stock_hist_cache(code, date_start, None, is_cache, tbs.ADJUST_TYPE)
+        data = stock_hist_cache(code, date_start, None, is_cache, tbs.ADJUST_TYPE,next_day)
         fetch_stock_hist_Replace(stockAllData,data)
-
+        fetch_stock_hist_NextDay(data,next_day)
 
         if data is not None:
             data.loc[:, 'p_change'] = tl.ROC(data['close'].values, 1)
@@ -268,6 +270,16 @@ def fetch_stock_hist(data_base,stockAllData=None, date_start=None, is_cache=True
     except Exception as e:
         logging.error(f"stockfetch.fetch_stock_hist处理异常：{e}")
     return None
+
+def fetch_stock_hist_NextDay(data,next_day):
+    if next_day is None:
+        return
+    #lastDay=data.tail(n=1)
+   #lastDay["date"]=next_day
+    #data._append(lastDay, ignore_index=True)
+    data.loc[len(data.index)]=0
+    data.loc[len(data.index)-1, "date"] = next_day
+
 
 def fetch_stock_hist_Replace(data_base, data):
     if data_base is None:
@@ -331,8 +343,13 @@ def stock_hist_cache_pickle(code, date_start, date_end=None, is_cache=True, adju
 
 
 # 增加读取股票缓存方法。加快处理速度。多线程解决效率
-def stock_hist_cache(code, date_start, date_end=None, is_cache=True, adjust=''):
-    cache_dir = os.path.join(stock_hist_cache_path, date_start[0:6], date_start)
+def stock_hist_cache(code, date_start, date_end=None, is_cache=True, adjust='',next_day=None):
+    if next_day is None:
+      cache_dir = os.path.join(stock_hist_cache_path, date_start[0:6], date_start)
+    else:
+      next_daystr= next_day.strftime("%Y%m%d")
+      cache_dir = os.path.join(stock_hist_cache_path, next_daystr[0:6], next_daystr)
+
     # 如果没有文件夹创建一个。月文件夹和日文件夹。方便删除。
     try:
         if not os.path.exists(cache_dir):
@@ -345,7 +362,7 @@ def stock_hist_cache(code, date_start, date_end=None, is_cache=True, adjust=''):
         if os.path.isfile(cache_file):
             return pd.read_pickle(cache_file, compression="gzip")
         else:
-            #print(f"stock_hist_cache.From Server：future {code}")
+            print(f"stock_hist_cache.From Server：future {code}")
             if date_end is not None:
                 stock = she.stock_zh_a_hist(symbol=code, period="daily", start_date=date_start, end_date=date_end,
                                             adjust=adjust)

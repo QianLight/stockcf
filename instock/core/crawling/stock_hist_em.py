@@ -53,6 +53,7 @@ def stock_zh_a_spot_em() -> pd.DataFrame:
     all8Counts=allStockCounts-all30Counts-all68Counts-len(temp_df)
     temp_df=temp_df.drop(temp_df[(temp_df['f14'].str.startswith("*ST"))].index)
     temp_df=temp_df.drop(temp_df[(temp_df['f14'].str.startswith("ST"))].index)
+
     temp_df=temp_df.drop(temp_df[(temp_df['f14'].str.endswith("退"))].index)
 
     allSTCounts=allStockCounts-all30Counts-all68Counts-all8Counts-len(temp_df)

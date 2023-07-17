@@ -47,7 +47,7 @@ def LoopStrategy():
     bdj.main()
 
     print("######## 完成任务, 使用时间: %s 秒 #######" % (time.time() - start))
-    #LoopStrategy()
+    LoopStrategy()
 
 #def LoopStrategy():
 #	# 打印当前时间

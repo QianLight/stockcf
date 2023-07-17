@@ -7,6 +7,7 @@ import instock.core.stockfetch as stf
 import instock.core.tablestructure as tbs
 import instock.lib.trade_time as trd
 from instock.lib.singleton_type import singleton_type
+import progressbar
 
 __author__ = 'myh '
 __date__ = '2023/3/10 '
@@ -26,7 +27,7 @@ class stock_data(metaclass=singleton_type):
 
 # 读取股票历史数据
 class stock_hist_data(metaclass=singleton_type):
-    def __init__(self, date=None, stocks=None, workers=16):
+    def __init__(self, next_day=None,date=None, stocks=None, workers=16):
         if stocks is None:
             _allDatas=stock_data(date).get_data()
             _subset = _allDatas[list(tbs.TABLE_CN_STOCK_FOREIGN_KEY['columns'])]
@@ -42,12 +43,14 @@ class stock_hist_data(metaclass=singleton_type):
         nAllCounts = len(stocks)
         nBackIndex = 0;
 
-        #print(f"stock_hist_data.Back：start {date}")
+        p = progressbar.ProgressBar(max_value=nAllCounts)
+
+        #print(f"stock_hist_data.Back：start {date} {nAllCounts}")
 
         try:
             # max_workers是None还是没有给出，将默认为机器cup个数*5
             with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:
-                future_to_stock = {executor.submit(stf.fetch_stock_hist, stock,stockAllData, date_start, is_cache): stock for stock,stockAllData
+                future_to_stock = {executor.submit(stf.fetch_stock_hist, stock,stockAllData, date_start, is_cache,next_day=next_day): stock for stock,stockAllData
                                    in zip(stocks,stockAllDatas)}
                 for future in concurrent.futures.as_completed(future_to_stock):
                     stock = future_to_stock[future]
@@ -57,6 +60,7 @@ class stock_hist_data(metaclass=singleton_type):
                             _data[stock] = __data
 
                         nBackIndex += 1
+                        p.update(nBackIndex)
                         #print(f"stock_hist_data.Back：future {date} {stock[2]}  {nBackIndex}/ {nAllCounts}")
                     except Exception as e:
                         logging.error(f"singleton.stock_hist_data处理异常：{stock[1]}代码{e}")
