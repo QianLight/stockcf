@@ -7,7 +7,7 @@ import talib as tl
 __author__ = 'myh '
 __date__ = '2023/3/10 '
 
-def check(code_name, data, date=None, threshold=180):
+def check(code_name, data, date=None, threshold=1):
     if date is None:
         end_date = code_name[0]
     else:
@@ -20,13 +20,16 @@ def check(code_name, data, date=None, threshold=180):
 
     data = data.tail(n=threshold)
 
-    mindata=data['low'].values.min()
-    maxdata=data['max'].values.max()
+    if data.iloc[-1]['p_change']<0:
+        return False
+
+    mindata=data.iloc[-1]['low']
+    maxdata=data.iloc[-1]['high']
 
 
     min_max = (maxdata - mindata) / maxdata
 
-    if min_max>0.3:
+    if min_max>0.05:
         return True
     else:
        return False

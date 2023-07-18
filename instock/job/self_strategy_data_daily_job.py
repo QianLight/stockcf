@@ -94,7 +94,7 @@ def main():
     # 使用方法传递。
     with concurrent.futures.ThreadPoolExecutor() as executor:
        # for strategy in tbs.TABLE_CN_STOCK_STRATEGIES:
-        strategy=tbs.TABLE_CN_STOCK_STRATEGIES[len(tbs.TABLE_CN_STOCK_STRATEGIES)-1]
+        strategy=tbs.TABLE_CN_STOCK_STRATEGIES[0]
         executor.submit(runt.run_with_args, prepare, strategy)
 
 
