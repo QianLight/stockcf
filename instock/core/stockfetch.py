@@ -260,7 +260,6 @@ def fetch_stock_hist(data_base,stockAllData=None, date_start=None, is_cache=True
     try:
         data = stock_hist_cache(code, date_start, None, is_cache, tbs.ADJUST_TYPE,next_day)
         fetch_stock_hist_Replace(stockAllData,data)
-        fetch_stock_hist_NextDay(data,next_day)
 
         if data is not None:
             data.loc[:, 'p_change'] = tl.ROC(data['close'].values, 1)
@@ -274,11 +273,16 @@ def fetch_stock_hist(data_base,stockAllData=None, date_start=None, is_cache=True
 def fetch_stock_hist_NextDay(data,next_day):
     if next_day is None:
         return
+    dataStr=next_day.strftime("%Y-%m-%d")
+    dataNext = data[data["date"] == dataStr]
+    if len(dataNext)==1:
+        return
+
     #lastDay=data.tail(n=1)
    #lastDay["date"]=next_day
     #data._append(lastDay, ignore_index=True)
     data.loc[len(data.index)]=0
-    data.loc[len(data.index)-1, "date"] = next_day
+    data.loc[len(data.index)-1, "date"] = dataStr
 
 
 def fetch_stock_hist_Replace(data_base, data):
@@ -289,8 +293,8 @@ def fetch_stock_hist_Replace(data_base, data):
 
     dataTime = data_base[0]
 
-    data = data[data["date"] == dataTime]
-    if len(data)==0:
+    dataTmp = data[data["date"] == dataTime]
+    if len(dataTmp)==0:
         return
 
     data.loc[data["date"] == dataTime, "open"] = data_base[11]
@@ -361,6 +365,9 @@ def stock_hist_cache(code, date_start, date_end=None, is_cache=True, adjust='',n
     # 如果缓存存在就直接返回缓存数据。压缩方式。
     try:
         if os.path.isfile(cache_file):
+            #dataTmp=pd.read_pickle(cache_file, compression="gzip")
+            #fetch_stock_hist_NextDay(dataTmp, next_day)
+            #dataTmp.to_pickle(cache_file, compression="gzip")
             return pd.read_pickle(cache_file, compression="gzip")
         else:
             print(f"stock_hist_cache.From Server：future {code}")
@@ -376,6 +383,7 @@ def stock_hist_cache(code, date_start, date_end=None, is_cache=True, adjust='',n
             stock = stock.sort_index()  # 将数据按照日期排序下。
             try:
                 if is_cache:
+                    fetch_stock_hist_NextDay(stock, next_day)
                     stock.to_pickle(cache_file, compression="gzip")
             except Exception:
                 pass

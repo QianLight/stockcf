@@ -157,10 +157,10 @@ def fund_etf_hist_em(
         "end": end_date,
         "_": "1623766962675",
     }
-    s = requests.session()
-    s.keep_alive = False
-    r=s.get(url, params=params)
-    #r = requests.get(url, params=params)
+    #s = requests.session()
+    #s.keep_alive = False
+    #r=s.get(url, params=params)
+    r = requests.get(url, params=params)
     data_json = r.json()
     r.close()
     if not (data_json["data"] and data_json["data"]["klines"]):
