@@ -81,7 +81,7 @@ def run_check(stocks, data_all, date, backtest_column, workers=40):
     try:
         with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:
             future_to_data = {executor.submit(rate.get_rates, stock,
-                                              data_all.get((date, stock[1], stock[2])), backtest_column,
+                                              data_all.get((date, stock[1], stock[2],stock[3])), backtest_column,
                                               len(backtest_column) - 1): stock for stock in stocks}
             for future in concurrent.futures.as_completed(future_to_data):
                 stock = future_to_data[future]
