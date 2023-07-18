@@ -16,6 +16,7 @@ import instock.core.tablestructure as tbs
 import instock.lib.database as mdb
 import instock.core.backtest.rate_stats as rate
 from instock.core.singleton_stock import stock_hist_data
+from tqdm import tqdm
 
 __author__ = 'myh '
 __date__ = '2023/3/10 '
@@ -77,6 +78,8 @@ def run_check(stocks, data_all, date, backtest_column, workers=40):
     nAllCounts=len(stocks)
     nBackIndex=0;
 
+    p = tqdm(total=nAllCounts, desc=date.strftime("%Y-%m-%d")+" 回测")
+
     try:
         with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:
             future_to_data = {executor.submit(rate.get_rates, stock,
@@ -90,6 +93,7 @@ def run_check(stocks, data_all, date, backtest_column, workers=40):
                         data[stock] = _data_
 
                     nBackIndex+=1
+                    p.update(1)
                     #print(f"backtest_data_daily_job.Back：future {date} {stock[2]}  {nBackIndex}/ {nAllCounts}")
 
                 except Exception as e:

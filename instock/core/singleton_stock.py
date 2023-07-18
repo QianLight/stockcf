@@ -43,7 +43,7 @@ class stock_hist_data(metaclass=singleton_type):
         nAllCounts = len(stocks)
         nBackIndex = 0;
 
-        p = tqdm(total=nAllCounts,desc="历史数据")
+        p = tqdm(total=nAllCounts,desc=date.strftime("%Y-%m-%d")+" 历史数据")
 
         #print(f"stock_hist_data.Back：start {date} {nAllCounts}")
 

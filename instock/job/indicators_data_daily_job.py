@@ -7,6 +7,7 @@ import concurrent.futures
 import pandas as pd
 import os.path
 import sys
+from tqdm import tqdm
 
 cpath_current = os.path.dirname(os.path.dirname(__file__))
 cpath = os.path.abspath(os.path.join(cpath_current, os.pardir))
@@ -69,7 +70,7 @@ def run_check(stocks, date=None, workers=40):
 
     nAllCounts=len(stocks)
     nBackIndex=0;
-
+    p = tqdm(total=nAllCounts, desc=date.strftime("%Y-%m-%d")+" 指标计算")
     try:
         with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:
             future_to_data = {executor.submit(idr.get_indicator, k, stocks[k], data_column, date=date): k for k in stocks}
@@ -82,6 +83,7 @@ def run_check(stocks, date=None, workers=40):
                         data[stock] = _data_
 
                     nBackIndex+=1
+                    p.update(1)
                     #print(f"calculate_indicator.Back：future {date} {stock[2]}  {nBackIndex}/ {nAllCounts}")
                 except Exception as e:
                     logging.error(f"indicators_data_daily_job.run_check处理异常：{stock[1]}代码{e}")

@@ -16,6 +16,7 @@ import instock.core.tablestructure as tbs
 import instock.lib.database as mdb
 from instock.core.singleton_stock import stock_hist_data
 import instock.core.pattern.pattern_recognitions as kpr
+from tqdm import tqdm
 
 __author__ = 'myh '
 __date__ = '2023/3/10 '
@@ -63,6 +64,7 @@ def run_check(stocks, date=None, workers=40):
 
     nAllCounts=len(stocks)
     nBackIndex=0;
+    p = tqdm(total=nAllCounts, desc=date.strftime("%Y-%m-%d")+" k线形态")
 
     try:
         with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:
@@ -75,7 +77,8 @@ def run_check(stocks, date=None, workers=40):
                         data[stock] = _data_
 
                     nBackIndex+=1
-                    print(f"get_pattern_recognition.Back：future {date} {stock[2]}  {nBackIndex}/ {nAllCounts}")
+                    p.update(1)
+                    #print(f"get_pattern_recognition.Back：future {date} {stock[2]}  {nBackIndex}/ {nAllCounts}")
 
                 except Exception as e:
                     logging.error(f"klinepattern_data_daily_job.run_check处理异常：{stock[1]}代码{e}")

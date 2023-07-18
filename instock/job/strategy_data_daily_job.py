@@ -6,6 +6,7 @@ import concurrent.futures
 import pandas as pd
 import os.path
 import sys
+from tqdm import tqdm
 
 cpath_current = os.path.dirname(os.path.dirname(__file__))
 cpath = os.path.abspath(os.path.join(cpath_current, os.pardir))
@@ -15,6 +16,7 @@ import instock.core.tablestructure as tbs
 import instock.lib.database as mdb
 from instock.core.singleton_stock import stock_hist_data
 from instock.core.stockfetch import fetch_stock_top_entity_data
+
 
 __author__ = 'myh '
 __date__ = '2023/3/10 '
@@ -65,6 +67,7 @@ def run_check(strategy_fun, table_name, stocks, date, workers=40):
 
     nAllCounts=len(stocks)
     nBackIndex=0;
+    p = tqdm(total=nAllCounts, desc=date.strftime("%Y-%m-%d")+" 策略:"+strategy_fun.__name__)
 
     try:
         with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:
@@ -79,6 +82,7 @@ def run_check(strategy_fun, table_name, stocks, date, workers=40):
                         data.append(stock)
 
                     nBackIndex+=1
+                    p.update(1)
                     #print(f"strategy_fun.Back：future {date} {stock[2]}  {nBackIndex}/ {nAllCounts}")
 
                 except Exception as e:

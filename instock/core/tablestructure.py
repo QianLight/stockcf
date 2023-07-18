@@ -224,7 +224,8 @@ CN_STOCK_HIST_DATA = {'name': 'fund_etf_hist_em', 'cn': '基金某时间段的�
 TABLE_CN_STOCK_FOREIGN_KEY = {'name': 'cn_stock_foreign_key', 'cn': '股票外键',
                               'columns': {'date': {'type': DATE, 'cn': '日期', 'size': 0},
                                           'code': {'type': NVARCHAR(6), 'cn': '代码', 'size': 60},
-                                          'name': {'type': NVARCHAR(20), 'cn': '名称', 'size': 70}}}
+                                          'name': {'type': NVARCHAR(20), 'cn': '名称', 'size': 70},
+                                          'industry': {'type': NVARCHAR(20), 'cn': '行业', 'size': 70}}}
 
 TABLE_CN_STOCK_BACKTEST_DATA = {'name': 'cn_stock_backtest_data', 'cn': '股票回归测试数据',
                                 'columns': {'rate_%s' % i: {'type': FLOAT, 'cn': '%s日收益率' % i, 'size': 100} for i in
