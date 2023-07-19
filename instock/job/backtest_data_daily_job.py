@@ -78,7 +78,10 @@ def run_check(stocks, data_all, date, backtest_column, workers=40):
     nAllCounts=len(stocks)
     nBackIndex=0;
 
-    p = tqdm(total=nAllCounts, desc=date.strftime("%Y-%m-%d")+" 回测")
+    des_tqdm = " 回测"
+    if date is not None:
+        des_tqdm = date + des_tqdm
+    p = tqdm(total=nAllCounts, desc=des_tqdm)
 
     try:
         with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:

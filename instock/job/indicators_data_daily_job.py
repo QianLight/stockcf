@@ -105,9 +105,16 @@ def guess_buy(date):
 
         _columns = tuple(tbs.TABLE_CN_STOCK_FOREIGN_KEY['columns'])
         _selcol = '`,`'.join(_columns)
+
+
         sql = f'''SELECT `{_selcol}` FROM `{_table_name}` WHERE `date` = '{date}' and 
-                `kdjk` >= 80 and `kdjd` >= 70 and `kdjj` >= 100 and `rsi_6` >= 80 and 
-                `cci` >= 100 and `cr` >= 300 and `wr_6` >= -20 and `vr` >= 160'''
+                `kdjk` < 20 and `kdjd` < 30 and `kdjj` < 10 and `rsi_6` < 20 and 
+                `cci` < -100 and `cr` < 40 and `wr_6` < -80 and `vr` < 40'''
+
+        sql = f'''SELECT `{_selcol}` FROM `{_table_name}` WHERE `date` = '{date}' and 
+                `kdjk` < 20 and `kdjd` < 30 and `kdjj` < 10  and 
+                `cci` < -100 and `cr` < 40 and `wr_6` < -80 '''
+
         data = pd.read_sql(sql=sql, con=mdb.engine())
         data = data.drop_duplicates(subset="code", keep="last")
         # data.set_index('code', inplace=True)
@@ -141,8 +148,8 @@ def guess_sell(date):
         _columns = tuple(tbs.TABLE_CN_STOCK_FOREIGN_KEY['columns'])
         _selcol = '`,`'.join(_columns)
         sql = f'''SELECT `{_selcol}` FROM `{_table_name}` WHERE `date` = '{date}' and 
-                `kdjk` < 20 and `kdjd` < 30 and `kdjj` < 10 and `rsi_6` < 20 and 
-                `cci` < -100 and `cr` < 40 and `wr_6` < -80 and `vr` < 40'''
+                `kdjk` >= 80 and `kdjd` >= 70 and `kdjj` >= 100 and `rsi_6` >= 80 and 
+                `cci` >= 100 and `cr` >= 300 and `wr_6` >= -20 and `vr` >= 160'''
         data = pd.read_sql(sql=sql, con=mdb.engine())
         data = data.drop_duplicates(subset="code", keep="last")
         # data.set_index('code', inplace=True)
