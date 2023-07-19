@@ -1,5 +1,7 @@
 import logging
 import concurrent.futures
+
+import numpy as np
 import pandas as pd
 import os.path
 import sys
@@ -30,8 +32,15 @@ def CaculateEarnRatio(data, keyword,tagDes):
 
 def main():
     table_name ="cn_stock_strategy_limitup"
-    sql = f"SELECT * FROM `{table_name}`"
+    now_date = datetime.datetime.now().date()
+    sql = f"SELECT * FROM `{table_name}` WHERE `date` < '{now_date}'"
     data = pd.read_sql(sql=sql, con=mdb.engine())
+    data=data.drop_duplicates(subset=["code"], keep="first", inplace = False, ignore_index = False)
+    dataRate = data.iloc[:, 4:]
+    data.insert(1, "last_site", data.ffill(axis=1).iloc[:, -1])
+
+    #minvalueIndexLabel = data.idxmin()
+
     allDataFramesByCode = data.groupby('date')
 
     CaculateEarnRatio(data, f"rate_1", "total")
