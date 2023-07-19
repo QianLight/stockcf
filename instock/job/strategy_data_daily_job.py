@@ -67,7 +67,7 @@ def run_check(strategy_fun, table_name, stocks, date, workers=40):
 
     nAllCounts=len(stocks)
     nBackIndex=0;
-    p = tqdm(total=nAllCounts, desc=date.strftime("%Y-%m-%d")+" 策略:"+strategy_fun.__name__)
+    #p = tqdm(total=nAllCounts, desc=date.strftime("%Y-%m-%d")+" 策略:"+strategy_fun.__name__)
 
     try:
         with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:
@@ -82,7 +82,7 @@ def run_check(strategy_fun, table_name, stocks, date, workers=40):
                         data.append(stock)
 
                     nBackIndex+=1
-                    p.update(1)
+                    #p.update(1)
                     #print(f"strategy_fun.Back：future {date} {stock[2]}  {nBackIndex}/ {nAllCounts}")
 
                 except Exception as e:
