@@ -24,6 +24,7 @@ def CaculateEarnRatio(data, keyword,tagDes):
        return
 
     data_earn_ratio=len(data_earn)/(len(data_earn)+len(data_neg))
+    #if data_earn_ratio>0.8:
     print(f"{tagDes} {keyword} ratio:{data_earn_ratio} {len(data)} {len(data_earn)} {len(data_neg)}");
 
 
@@ -31,13 +32,18 @@ def main():
     table_name ="cn_stock_strategy_limitup"
     sql = f"SELECT * FROM `{table_name}`"
     data = pd.read_sql(sql=sql, con=mdb.engine())
-
-    for i in range(1, tablestructure.RATE_FIELDS_COUNT + 1, 1):
-        CaculateEarnRatio(data, f"rate_{i}", "total")
-    CaculateEarnRatio(data,"rate_1","total")
     allDataFramesByCode = data.groupby('date')
-    for date, group in allDataFramesByCode:
-        CaculateEarnRatio(group,"rate_1",date)
+
+    CaculateEarnRatio(data, f"rate_1", "total")
+
+    #for i in range(1, tablestructure.RATE_FIELDS_COUNT + 1, 1):
+    #    CaculateEarnRatio(data, f"rate_{i}", "total")
+    #    for date, group in allDataFramesByCode:
+    #        CaculateEarnRatio(group, f"rate_{i}", date)
+
+
+    #for date, group in allDataFramesByCode:
+    #    CaculateEarnRatio(group,"rate_1",date)
 
     print("finish!");
 
