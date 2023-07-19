@@ -5,6 +5,7 @@ import logging
 import os.path
 import sys
 import pandas as pd
+import datetime
 
 cpath_current = os.path.dirname(os.path.dirname(__file__))
 cpath = os.path.abspath(os.path.join(cpath_current, os.pardir))
@@ -31,9 +32,13 @@ def save_nph_stock_spot_data(date, before=True):
             return
 
         table_name = tbs.TABLE_CN_STOCK_SPOT['name']
+
+        tmp_year, tmp_month, tmp_day = data.iloc[-1]["date"].split("-")
+        todayDate = datetime.datetime(int(tmp_year), int(tmp_month), int(tmp_day)).date()
+        #todayDate=data.iloc[-1]["date"]
         # 删除老数据。
         if mdb.checkTableIsExist(table_name):
-            del_sql = f"DELETE FROM `{table_name}` where `date` = '{date}'"
+            del_sql = f"DELETE FROM `{table_name}` where `date` = '{todayDate}'"
             mdb.executeSql(del_sql)
             cols_type = None
         else:
