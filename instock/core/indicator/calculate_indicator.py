@@ -445,7 +445,7 @@ def get_indicatorsData(data,code):
         logging.error(f"calculate_indicator.get_indicatorsData 处理异常：{data['code']}代码{e}")
     return None
 
-def get_indicator(code_name, data, stock_column, date=None, calc_threshold=90):
+def get_indicator(code_name, data, stock_column, date=None,threshold=1, calc_threshold=90):
     try:
         #print(f"calculate_indicator.get_indicator 00000：{code_name} {date}")
 
@@ -466,7 +466,7 @@ def get_indicator(code_name, data, stock_column, date=None, calc_threshold=90):
 
         #print(f"calculate_indicator.get_indicator 11111：{code_name} {code} {date}")
 
-        idr_data = get_indicators(data,code=code,end_date=end_date, threshold=1, calc_threshold=calc_threshold)
+        idr_data = get_indicators(data,code=code,end_date=end_date, threshold=threshold, calc_threshold=calc_threshold)
 
         #print(f"calculate_indicator.get_indicator 22222：{code}")
         # 增加空判断，如果是空返回 0 数据。
@@ -475,6 +475,8 @@ def get_indicator(code_name, data, stock_column, date=None, calc_threshold=90):
                 stock_data_list.append(0)
             return pd.Series(stock_data_list, index=stock_column)
 
+        if threshold is None:
+            return idr_data
         #print(f"calculate_indicator.get_indicator 33333：{code}")
         # 初始化统计类
         for i in range(columns_num):
