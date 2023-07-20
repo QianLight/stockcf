@@ -41,6 +41,8 @@ def LoopStrategy():
     _start = datetime.datetime.now()
     print("######## 任务执行时间: %s #######" % _start.strftime("%Y-%m-%d %H:%M:%S.%f"))
     with concurrent.futures.ThreadPoolExecutor() as executor:
+        # # 第3.2步创建股票指标数据表
+        executor.submit(gdj.main)
         executor.submit(sdj.main)
 
     # # # # 第6步创建股票回测
