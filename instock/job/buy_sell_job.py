@@ -63,7 +63,7 @@ def FallDownToMuch(_selcol,_table_name,date):
     indicators_data = indicators_data.drop_duplicates(subset="code", keep="last")
 
     sql = f'''SELECT `{_selcol}` FROM `{_table_name}` WHERE `date` = '{date}' and 
-            `kdjk` < 20 and `kdjd` < 30 and `kdjj` < 1 and
+            `kdjk` < 10 and `kdjd` < 15 and `kdjj` < -1 and
             `cci` < -100 and `cr` < 40 and `wr_6` < -80 and `macd`<0 '''
     indicators_kdj1_data = pd.read_sql(sql=sql, con=mdb.engine())
     indicators_kdj1_data = indicators_kdj1_data.drop_duplicates(subset="code", keep="last")

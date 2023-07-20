@@ -75,7 +75,8 @@ def save_nph_etf_spot_data(date, before=True):
 
 
 def main():
-    runt.run_with_args(save_nph_stock_spot_data,False)
+    #runt.run_with_args(save_nph_stock_spot_data,False)
+    save_nph_stock_spot_data(False)
     #runt.run_with_args(save_nph_etf_spot_data,False)
 
 

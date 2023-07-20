@@ -20,8 +20,8 @@ from tqdm import tqdm
 def CaculateEarnRatio(data, keyword,tagDes):
     mask = (data[keyword] >0)
     mask_neg=data[keyword] <0
-    data_neg = data.loc[mask_neg].copy()
-    data_earn = data.loc[mask].copy()
+    data_neg = data.loc[mask_neg].copy().sort_values(keyword,inplace=False)
+    data_earn = data.loc[mask].copy().sort_values(keyword,inplace=False)
     if len(data_earn)+len(data_neg)==0:
        return
 
