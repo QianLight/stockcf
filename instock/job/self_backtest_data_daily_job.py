@@ -43,6 +43,7 @@ def prepare():
         table = tables[2]
         executor.submit(process, tables[0], stocks_data, date, backtest_column)
         executor.submit(process, tables[1], stocks_data, date, backtest_column)
+        executor.submit(process, tables[2], stocks_data, date, backtest_column)
 
 
 def process(table, data_all, date, backtest_column):

@@ -116,7 +116,7 @@ def guess_buy(date):
 
         sql = f'''SELECT `{_selcol}` FROM `{_table_name}` WHERE `date` = '{date}' and 
                 `kdjk` < 20 and `kdjd` < 30 and `kdjj` < 10  and 
-                `cci` < -100 and `cr` < 40 and `wr_6` < -80 '''
+                `cci` < -100 and `cr` < 40 and `wr_6` < -80 and `macd`<0 '''
 
         data = pd.read_sql(sql=sql, con=mdb.engine())
         data = data.drop_duplicates(subset="code", keep="last")
@@ -175,12 +175,14 @@ def guess_sell(date):
         logging.error(f"indicators_data_daily_job.guess_sell处理异常：{e}")
 
 
-def main():
+def main(caculateindicators=True):
     # 使用方法传递。
-    runt.run_with_args(prepare)
+    if caculateindicators:
+      runt.run_with_args(prepare)
+
     # 二次筛选数据。直接计算买卖股票数据。
-    runt.run_with_args(guess_buy)
-    runt.run_with_args(guess_sell)
+    #runt.run_with_args(guess_buy)
+    #runt.run_with_args(guess_sell)
 
 
 # main函数入口

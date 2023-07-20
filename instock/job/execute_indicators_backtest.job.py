@@ -25,6 +25,7 @@ import indicators_data_daily_job as gdj
 import self_strategy_data_daily_job as sdj
 import self_backtest_data_daily_job as bdj
 import klinepattern_data_daily_job as kdj
+import buy_sell_job as bs
 
 __author__ = 'myh '
 __date__ = '2023/3/10 '
@@ -42,11 +43,13 @@ def main():
         # # 第3.1步创建股票其它基础数据表
         #executor.submit(hdtj.main)
         # # 第3.2步创建股票指标数据表
-        executor.submit(gdj.main)
+        executor.submit(gdj.main,False)
         # # # # 第4步创建股票k线形态表
         #executor.submit(kdj.main)
         # # # # 第5步创建股票策略数据表
         #executor.submit(sdj.main)
+        # # # # 买卖信号
+        executor.submit(bs.main)
 
     # # # # 第6步创建股票回测
     bdj.main()

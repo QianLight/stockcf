@@ -32,6 +32,7 @@ def CaculateEarnRatio(data, keyword,tagDes):
 
 def main():
     table_name ="cn_stock_strategy_increaselarge"
+    table_name = "cn_stock_indicators_buy"
     now_date = datetime.datetime.now().date()
     sql = f"SELECT * FROM `{table_name}` WHERE `date` < '{now_date}'"
     data = pd.read_sql(sql=sql, con=mdb.engine())
@@ -43,10 +44,10 @@ def main():
 
     allDataFramesByCode = data.groupby('date')
 
-    CaculateEarnRatio(data, f"rate_1", "total")
+    #CaculateEarnRatio(data, f"rate_1", "total")
 
-    #for i in range(1, tablestructure.RATE_FIELDS_COUNT + 1, 1):
-    #    CaculateEarnRatio(data, f"rate_{i}", "total")
+    for i in range(1, tablestructure.RATE_FIELDS_COUNT + 1, 1):
+        CaculateEarnRatio(data, f"rate_{i}", "total")
     #    for date, group in allDataFramesByCode:
     #        CaculateEarnRatio(group, f"rate_{i}", date)
 
