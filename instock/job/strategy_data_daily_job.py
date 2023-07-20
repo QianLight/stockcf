@@ -51,10 +51,10 @@ def prepare(date, strategy):
         if date.strftime("%Y-%m-%d") != data.iloc[0]['date']:
             data['date'] = date_str
         mdb.insert_db_from_df(data, table_name, cols_type, False, "`date`,`code`")
-        print(f"strategy_data_daily_job：{date} 策略 {strategy}")
+        print(f"strategy_data_daily_job：{date} 策略 {table_name}")
 
     except Exception as e:
-        logging.error(f"strategy_data_daily_job.prepare处理异常：{strategy}策略{e}")
+        logging.error(f"strategy_data_daily_job.prepare处理异常：{table_name}策略{e}")
 
 
 def run_check(strategy_fun, table_name, stocks, date, workers=40):
