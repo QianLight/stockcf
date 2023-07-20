@@ -7,6 +7,7 @@ import datetime
 import concurrent.futures
 import sys
 import time
+from tqdm import tqdm
 import instock.lib.trade_time as trd
 
 __author__ = 'myh '
@@ -22,13 +23,29 @@ def run_with_args(run_fun, *args):
         tmp_year, tmp_month, tmp_day = sys.argv[2].split("-")
         end_date = datetime.datetime(int(tmp_year), int(tmp_month), int(tmp_day)).date()
         run_date = start_date
+        day_count=(end_date-run_date)
+        #p = tqdm(total=day_count.days, desc="当前执行时间进度:")
         try:
             with concurrent.futures.ThreadPoolExecutor() as executor:
+                lastexecutor=None
                 while run_date <= end_date:
                     if trd.is_trade_date(run_date):
-                        executor.submit(run_fun, run_date, *args)
-                        time.sleep(2)
-                    run_date += datetime.timedelta(days=1)
+                        if lastexecutor is None:
+                           print(f"执行当前时间: {run_date} 函数:{run_fun.__name__}")
+                           lastexecutor=executor.submit(run_fun, run_date, *args)
+
+                        if lastexecutor is not None:
+                            if lastexecutor.done():
+                                run_date += datetime.timedelta(days=1)
+                                #p.update(1)
+                                lastexecutor=None
+                    else:
+                        run_date += datetime.timedelta(days=1)
+                        #p.update(1)
+
+                    time.sleep(0.1)
+
+
         except Exception as e:
             logging.error(f"run_template.run_with_args处理异常：{run_fun}{sys.argv}{e}")
     elif len(sys.argv) == 2:

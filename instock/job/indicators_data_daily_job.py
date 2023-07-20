@@ -7,6 +7,7 @@ import concurrent.futures
 import pandas as pd
 import os.path
 import sys
+import time
 from tqdm import tqdm
 
 cpath_current = os.path.dirname(os.path.dirname(__file__))
@@ -24,8 +25,8 @@ __date__ = '2023/3/10 '
 
 def prepare(date):
     try:
+       # print(f"stocks_data {date}")
         stocks_data = stock_hist_data(date=date).get_data()
-        #print(f"stocks_data {date} {len(stocks_data)}")
 
         if stocks_data is None:
             return
@@ -67,6 +68,8 @@ def run_check(stocks, date=None, workers=40):
     columns.insert(0, 'code')
     columns.insert(0, 'date')
     data_column = columns
+
+    #print(f"run_check get_indicator {date}")
 
     nAllCounts=len(stocks)
     nBackIndex=0;

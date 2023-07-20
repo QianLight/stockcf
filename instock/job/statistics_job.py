@@ -31,7 +31,7 @@ def CaculateEarnRatio(data, keyword,tagDes):
 
 
 def main():
-    table_name ="cn_stock_strategy_limitup"
+    table_name ="cn_stock_strategy_increaselarge"
     now_date = datetime.datetime.now().date()
     sql = f"SELECT * FROM `{table_name}` WHERE `date` < '{now_date}'"
     data = pd.read_sql(sql=sql, con=mdb.engine())

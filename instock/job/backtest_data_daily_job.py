@@ -8,6 +8,7 @@ import pandas as pd
 import os.path
 import sys
 import datetime
+import time
 
 cpath_current = os.path.dirname(os.path.dirname(__file__))
 cpath = os.path.abspath(os.path.join(cpath_current, os.pardir))
@@ -37,6 +38,7 @@ def prepare():
     for k in stocks_data:
         date = k[0]
         break
+    print(f"backtest_data_daily_job 表数量 {len(tables)}")
     # 回归测试表
     with concurrent.futures.ThreadPoolExecutor() as executor:
         for table in tables:
@@ -45,6 +47,7 @@ def prepare():
 
 def process(table, data_all, date, backtest_column):
     table_name = table['name']
+    start = datetime.datetime.now()
     if not mdb.checkTableIsExist(table_name):
         return
 
@@ -67,9 +70,9 @@ def process(table, data_all, date, backtest_column):
 
         data_new = pd.DataFrame(results.values())
         mdb.update_db_from_df(data_new, table_name, ('date', 'code'))
-        print(f"backtest_data_daily_job：{date}  表 {table}")
+        print(f"backtest_data_daily_job：{date}  表 {table_name} {datetime.datetime.now() - start}")
     except Exception as e:
-        logging.error(f"backtest_data_daily_job.process处理异常：{table}表{e}")
+        logging.error(f"backtest_data_daily_job.process处理异常：{table_name}表{e}")
 
 
 def run_check(stocks, data_all, date, backtest_column, workers=40):
@@ -81,7 +84,7 @@ def run_check(stocks, data_all, date, backtest_column, workers=40):
     des_tqdm = " 回测"
     if date is not None:
         des_tqdm = date + des_tqdm
-    p = tqdm(total=nAllCounts, desc=des_tqdm)
+    #p = tqdm(total=nAllCounts, desc=des_tqdm)
 
     try:
         with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:
@@ -96,7 +99,7 @@ def run_check(stocks, data_all, date, backtest_column, workers=40):
                         data[stock] = _data_
 
                     nBackIndex+=1
-                    p.update(1)
+                   # p.update(1)
                     #print(f"backtest_data_daily_job.Back：future {date} {stock[2]}  {nBackIndex}/ {nAllCounts}")
 
                 except Exception as e:
