@@ -41,7 +41,8 @@ def prepare():
     with concurrent.futures.ThreadPoolExecutor() as executor:
         #for table in tables:
         table = tables[2]
-        executor.submit(process, table, stocks_data, date, backtest_column)
+        executor.submit(process, tables[0], stocks_data, date, backtest_column)
+        executor.submit(process, tables[1], stocks_data, date, backtest_column)
 
 
 def process(table, data_all, date, backtest_column):

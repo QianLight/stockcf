@@ -45,8 +45,13 @@ def get_indicators(data,code, end_date=None, threshold=120, calc_threshold=None)
         logging.error(f"calculate_indicator.get_indicators 处理异常：{data['code']}代码{e}")
     return None
 
+allindicatorsDic={}
 def get_indicatorsData(data,code):
     try:
+        global allindicatorsDic
+        if code in allindicatorsDic:
+            return allindicatorsDic[code]
+
         now_time1 = datetime.datetime.now()
         now_date = now_time1.date().strftime("%Y%m%d")
         #cache_dir = os.path.join(stock_indicator_cache_path, now_date)
@@ -440,6 +445,8 @@ def get_indicatorsData(data,code):
         #except Exception:
         #    pass
         # time.sleep(1)
+
+        allindicatorsDic[code]=data
         return data
     except Exception as e:
         logging.error(f"calculate_indicator.get_indicatorsData 处理异常：{data['code']}代码{e}")
