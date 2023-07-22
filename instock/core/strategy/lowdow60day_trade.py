@@ -28,4 +28,9 @@ def check(code_name, data, date=None, threshold=60):
     if daymin<=minvalue:
        return True
 
+    middleIndex=-3
+    if data.iloc[middleIndex]['low'] < data.iloc[middleIndex-1]['low'] and data.iloc[middleIndex]['low'] < data.iloc[middleIndex-2]['low'] and \
+            data.iloc[middleIndex]['low'] < data.iloc[middleIndex+1]['low'] and data.iloc[middleIndex]['low'] < data.iloc[middleIndex+2]['low']:
+        return True
+
     return False

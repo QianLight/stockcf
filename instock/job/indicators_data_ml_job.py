@@ -36,7 +36,8 @@ def prepare(date):
         qlibTargetFolder = F'F:/Project/Gits/ProjectData/cfquant/'
         trainname="train"
         #if utilsHelper.CheckIsHouse() == True:
-            #qlibTargetFolder = F'H:/Stock/ProjectData/qlibdata/'
+        qlibTargetFolder = F'H:/Stock/ProjectData/qlibdata/'
+
         exportPath = f'{qlibTargetFolder}{trainname}.csv'
         allDatas.to_csv(exportPath, index=False)
 

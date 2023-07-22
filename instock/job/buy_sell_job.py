@@ -68,7 +68,7 @@ def FallDownToMuch(_selcol,_table_name,date):
     indicators_kdj1_data = pd.read_sql(sql=sql, con=mdb.engine())
     indicators_kdj1_data = indicators_kdj1_data.drop_duplicates(subset="code", keep="last")
 
-    _table_name="lowdow60day_trade"
+    _table_name="cn_stock_strategy_lowdow60day_trade"
     sql = f'''SELECT `{_selcol}` FROM `{_table_name}` WHERE `date` = '{date}' '''
     lowdow60day_data = pd.read_sql(sql=sql, con=mdb.engine())
     lowdow60day_data = lowdow60day_data.drop_duplicates(subset="code", keep="last")

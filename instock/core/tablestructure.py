@@ -325,7 +325,7 @@ TABLE_CN_STOCK_INDICATORS_SELL = {'name': 'cn_stock_indicators_sell', 'cn': '股
                                   'columns': _tmp_columns}
 
 TABLE_CN_STOCK_STRATEGIES = [
-    {'name': 'lowdow60day_trade', 'cn': '60日新低', 'size': 70, 'func': lowdow60day_trade.check,
+    {'name': 'cn_stock_strategy_lowdow60day_trade', 'cn': '60日新低', 'size': 70, 'func': lowdow60day_trade.check,
      'columns': _tmp_columns},
     {'name': 'cn_stock_strategy_limitup', 'cn': '涨停', 'size': 70, 'func': limitup_trade.check,
      'columns': _tmp_columns},
