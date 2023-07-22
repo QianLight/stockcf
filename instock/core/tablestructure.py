@@ -22,11 +22,12 @@ from instock.core.strategy import mabond_trade
 from instock.core.strategy import updown_trade
 from instock.core.strategy import increaselarge
 from instock.core.strategy import down_mabond_trade
-from instock.core.strategy import limitup_trade
+from instock.core.strategy import limitup_10_trade
 from instock.core.strategy import lowdow60day_trade
 from instock.core.strategy import cup_handle
 from instock.core.strategy import double_bottom
 from instock.core.strategy import newstock
+from instock.core.strategy import largedown
 __author__ = 'myh '
 __date__ = '2023/3/10 '
 
@@ -382,6 +383,8 @@ TABLE_CN_STOCK_INDICATORS_SELL = {'name': 'cn_stock_indicators_sell', 'cn': '股
                                   'columns': _tmp_columns}
 
 TABLE_CN_STOCK_STRATEGIES = [
+    {'name': 'cn_stock_strategy_largedown', 'cn': '大跌', 'size': 70, 'func': largedown.check,
+     'columns': _tmp_columns},
     {'name': 'cn_stock_strategy_newstock', 'cn': '次新股', 'size': 70, 'func': newstock.check,
      'columns': _tmp_columns},
     {'name': 'cn_stock_strategy_lowdow60day_trade', 'cn': '60日新低', 'size': 70, 'func': lowdow60day_trade.check,
@@ -392,7 +395,7 @@ TABLE_CN_STOCK_STRATEGIES = [
      'columns': _tmp_columns},
     {'name': 'cn_stock_strategy_cup_handle', 'cn': '杯柄形态', 'size': 70, 'func': cup_handle.check,
      'columns': _tmp_columns},
-    {'name': 'cn_stock_strategy_limitup', 'cn': '涨停', 'size': 70, 'func': limitup_trade.check,
+    {'name': 'cn_stock_strategy_limitup_10', 'cn': '涨停', 'size': 70, 'func': limitup_10_trade.check,
      'columns': _tmp_columns},
     {'name': 'cn_stock_strategy_enter', 'cn': '放量上涨', 'size': 70, 'func': enter.check_volume,
      'columns': _tmp_columns},

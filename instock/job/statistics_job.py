@@ -76,7 +76,7 @@ def main():
     data.insert(1, "last_site", data.ffill(axis=1).iloc[:, -1])
 
     EarnOrNeg(data)
-    SnsPairplot(data)
+    #SnsPairplot(data)
 
 
 

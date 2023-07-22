@@ -7,7 +7,7 @@ import talib as tl
 __author__ = 'myh '
 __date__ = '2023/3/10 '
 
-def check(code_name, data, date=None, threshold=1):
+def check(code_name, data, date=None, threshold=2):
     if date is None:
         end_date = code_name[0]
     else:
@@ -20,7 +20,7 @@ def check(code_name, data, date=None, threshold=1):
 
     data = data.tail(n=threshold)
 
-    if data.iloc[-1]['p_change']>9.5:
+    if data.iloc[-1]['p_change']<-5:
         return True
-    else:
-       return False
+
+    return False
