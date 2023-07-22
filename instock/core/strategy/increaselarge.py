@@ -23,7 +23,7 @@ def check(code_name, data, date=None, threshold=1):
     if data.iloc[-1]['p_change']<0:
         return False
 
-    mindata=data.iloc[-1]['low']
+    mindata=data.iloc[-1]['open']
     maxdata=data.iloc[-1]['high']
 
 

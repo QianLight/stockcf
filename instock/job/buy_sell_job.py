@@ -77,7 +77,7 @@ def FallDownToMuch(_selcol,_table_name,date):
     mask = (indicators_data['code'] .isin(lowdow60day_data["code"].values))
     fitdata.append(indicators_data.loc[mask].copy())
 
-    fitdata.append(indicators_kdj1_data)
+    #fitdata.append(indicators_kdj1_data)
 
     finaldata=pd.concat(fitdata)
     finaldata=finaldata.drop_duplicates(subset="code", keep="last")
