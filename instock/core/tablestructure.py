@@ -26,6 +26,7 @@ from instock.core.strategy import limitup_trade
 from instock.core.strategy import lowdow60day_trade
 from instock.core.strategy import cup_handle
 from instock.core.strategy import double_bottom
+from instock.core.strategy import newstock
 __author__ = 'myh '
 __date__ = '2023/3/10 '
 
@@ -326,6 +327,8 @@ TABLE_CN_STOCK_INDICATORS_SELL = {'name': 'cn_stock_indicators_sell', 'cn': '股
                                   'columns': _tmp_columns}
 
 TABLE_CN_STOCK_STRATEGIES = [
+    {'name': 'cn_stock_strategy_newstock', 'cn': '次新股', 'size': 70, 'func': newstock.check,
+     'columns': _tmp_columns},
     {'name': 'cn_stock_strategy_lowdow60day_trade', 'cn': '60日新低', 'size': 70, 'func': lowdow60day_trade.check,
      'columns': _tmp_columns},
     {'name': 'cn_stock_strategy_increaselarge', 'cn': '大幅上涨', 'size': 70, 'func': increaselarge.check,
