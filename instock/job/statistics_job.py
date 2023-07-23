@@ -71,7 +71,9 @@ def main():
     now_date = datetime.datetime.now().date()
     sql = f"SELECT * FROM `{table_name}` WHERE `date` < '{now_date}'"
     data = pd.read_sql(sql=sql, con=mdb.engine())
+    data=data.replace(-100, 0)
     data=data.drop_duplicates(subset=["code"], keep="first", inplace = False, ignore_index = False)
+
     dataRate = data.iloc[:, 4:]
     data.insert(1, "last_site", data.ffill(axis=1).iloc[:, -1])
 

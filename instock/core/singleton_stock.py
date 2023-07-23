@@ -44,7 +44,7 @@ class stock_hist_data(metaclass=singleton_type):
 
         self.make_hy_data(next_day=next_day,date=date,stocks=stocks,workers=workers)
         self.make_stocks(alldatas=stockAllDatas,stocks=stocks,next_day=next_day,date=date,workers=workers)
-        self.caculate_hy_data()
+        #self.caculate_hy_data()
 
     def make_stocks(self,alldatas,stocks,next_day=None,date=None,workers=16):
 
