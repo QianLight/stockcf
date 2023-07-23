@@ -82,6 +82,8 @@ def run_check(stocks, date=None, workers=40):
     else:
         return data
 
+    p.close()
+
 
 
 

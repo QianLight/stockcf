@@ -16,6 +16,7 @@ sys.path.append(cpath)
 import instock.lib.run_template as runt
 import instock.core.tablestructure as tbs
 import instock.lib.database as mdb
+import instock.lib.trade_time as trade_time
 import instock.core.indicator.calculate_indicator as idr
 from instock.core.singleton_stock import stock_hist_data
 
@@ -33,7 +34,7 @@ def guess_buy(date):
         _columns = tuple(tbs.TABLE_CN_STOCK_FOREIGN_KEY['columns'])
         _selcol = '`,`'.join(_columns)
 
-        data=FallDownToMuch(_selcol,_table_name,date)
+        data=GrowToUpByMacd(_selcol,_table_name,date)
         # data.set_index('code', inplace=True)
         if len(data.index) == 0:
             return
@@ -54,7 +55,7 @@ def guess_buy(date):
         logging.error(f"indicators_data_daily_job.guess_buy处理异常：{e}")
 
 
-def FallDownToMuch(_selcol,_table_name,date):
+def FallDownToMuch_KDJ(_selcol,_table_name,date):
 
     sql = f'''SELECT `{_selcol}` FROM `{_table_name}` WHERE `date` = '{date}' and 
             `kdjk` < 20 and `kdjd` < 30 and 
@@ -83,6 +84,46 @@ def FallDownToMuch(_selcol,_table_name,date):
     finaldata=finaldata.drop_duplicates(subset="code", keep="last")
     return finaldata
 
+def FallDownToMuch(_selcol,_table_name,date):
+
+    sql = f'''SELECT `{_selcol}` FROM `{_table_name}` WHERE `date` = '{date}' and 
+            `bias` < -8  '''
+    indicators_kdj1_data = pd.read_sql(sql=sql, con=mdb.engine())
+    indicators_kdj1_data = indicators_kdj1_data.drop_duplicates(subset="code", keep="last")
+    indicators_kdj1_data=indicators_kdj1_data.drop(indicators_kdj1_data[(indicators_kdj1_data['code'].str.startswith("BK")==False)].index)
+    fitdata=[]
+
+
+    fitdata.append(indicators_kdj1_data)
+
+    finaldata=pd.concat(fitdata)
+    finaldata=finaldata.drop_duplicates(subset="code", keep="last")
+    return finaldata
+
+
+def GrowToUpByMacd(_selcol,_table_name,date):
+
+    sql = f'''SELECT `{_selcol}` FROM `{_table_name}` WHERE `date` = '{date}' and 
+            `macd` >= 0  '''
+    indicators_macd = pd.read_sql(sql=sql, con=mdb.engine())
+    indicators_macd = indicators_macd.drop_duplicates(subset="code", keep="last")
+
+    lastdate=trade_time.get_previous_trade_date(date)
+    sql = f'''SELECT `{_selcol}` FROM `{_table_name}` WHERE `date` = '{lastdate}' and 
+            `macd` < 0  '''
+    indicators_macd_last = pd.read_sql(sql=sql, con=mdb.engine())
+    indicators_macd_last = indicators_macd_last.drop_duplicates(subset="code", keep="last")
+
+    fitdata=[]
+
+    mask = (indicators_macd['code'] .isin(indicators_macd_last["code"].values))
+    fitdata.append(indicators_macd.loc[mask].copy())
+
+    fitdata.append(indicators_macd_last)
+
+    finaldata=pd.concat(fitdata)
+    finaldata=finaldata.drop_duplicates(subset="code", keep="last")
+    return finaldata
 # 设置卖出数据。
 def guess_sell(date):
     try:

@@ -209,11 +209,15 @@ def get_plot_kline(code, stock, date, stock_name):
 
         # 东方财富股票页面
         if code.startswith("6"):
-            code_name = f"SH{code}"
+            code_name = f"concept/SH{code}"
         else:
-            code_name = f"SZ{code}"
+            code_name = f"concept/SZ{code}"
+
+        if code.startswith("BK"):
+            code_name = f"bk/90.{code}"
+
         div_dfcf_hq = Div(
-            text=f"""<a href="https://quote.eastmoney.com/concept/{code_name}.html" target="_blank">{code}{stock_name}行情</a>""",
+            text=f"""<a href="https://quote.eastmoney.com/{code_name}.html" target="_blank">{code}{stock_name}行情</a>""",
             width=150)
         if code.startswith(('1', '5')):
             div_dfcf_zl = Div()
