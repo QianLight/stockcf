@@ -92,11 +92,13 @@ def run_check(stocks, date=None, workers=40):
                     logging.error(f"indicators_data_daily_job.run_check处理异常：{stock[1]}代码{e}")
     except Exception as e:
         logging.error(f"indicators_data_daily_job.run_check处理异常：{e}")
+
+    p.close()
     if not data:
         return None
     else:
         return data
-    p.close()
+
 
 
 # 对每日指标数据，进行筛选。将符合条件的。二次筛选出来。

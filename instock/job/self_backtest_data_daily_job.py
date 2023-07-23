@@ -107,12 +107,15 @@ def run_check(stocks, data_all, date, backtest_column, workers=40):
                     logging.error(f"backtest_data_daily_job.run_check处理异常：{stock[1]}代码{e}")
     except Exception as e:
         logging.error(f"backtest_data_daily_job.run_check处理异常：{e}")
+
+    p.close()
+
     if not data:
         return None
     else:
         return data
 
-    p.close()
+
 
 
 def main():
