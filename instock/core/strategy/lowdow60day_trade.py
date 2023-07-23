@@ -19,18 +19,27 @@ def check(code_name, data, date=None, threshold=60):
         mask = (data['date'] <= end_date)
         data = data.loc[mask].copy()
 
-    if len(data.index) < 90:
-        return False
+    #if len(data.index) < 90:
+    #    return False
 
-    data = data.tail(n=threshold+1)
-    minvalue=data.head(n=60)['low'].values.min()
-    daymin=data.iloc[-1]['low']
-    if daymin<=minvalue:
-       return True
+    maxallTime=data['high'].values.max()
+    minallTime = data['low'].values.min()
+    daymin = data.iloc[-1]['low']
+    lowratio = (daymin - minallTime) / minallTime
+    if lowratio <= 0.01:#近三年所有时间新低
+        return True
 
-    lowratio=(daymin-minvalue)/minvalue
-    if daymin<=0.01:
-       return True
+    threshold=180
+    if len(data.index) > threshold+1:
+        datatail = data.tail(n=threshold+1)
+        minvalue=datatail.head(n=threshold)['low'].values.min()
+        daymin=datatail.iloc[-1]['low']
+        if daymin<=minvalue:
+           return True
+
+        lowratio=(daymin-minvalue)/minvalue
+        if lowratio<=0.01:
+           return True
     #middleIndex=-3
     #if data.iloc[middleIndex]['low'] < data.iloc[middleIndex-1]['low'] and data.iloc[middleIndex]['low'] < data.iloc[middleIndex-2]['low'] and \
     #        data.iloc[middleIndex]['low'] < data.iloc[middleIndex+1]['low'] and data.iloc[middleIndex]['low'] < data.iloc[middleIndex+2]['low']:

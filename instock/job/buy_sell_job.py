@@ -104,7 +104,7 @@ def FallDownToMuch(_selcol,_table_name,date):
 def GrowToUpByMacd(_selcol,_table_name,date):
 
     sql = f'''SELECT `{_selcol}` FROM `{_table_name}` WHERE `date` = '{date}' and 
-            `macd` >= 0  '''
+            `macd` >= -0.001  '''
     indicators_macd = pd.read_sql(sql=sql, con=mdb.engine())
     indicators_macd = indicators_macd.drop_duplicates(subset="code", keep="last")
 

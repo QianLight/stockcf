@@ -390,6 +390,8 @@ TABLE_CN_STOCK_INDICATORS_SELL = {'name': 'cn_stock_indicators_sell', 'cn': '股
                                   'columns': _tmp_columns}
 
 TABLE_CN_STOCK_STRATEGIES = [
+    {'name': 'cn_stock_strategy_lowdow60day_trade', 'cn': '60日新低', 'size': 70, 'func': lowdow60day_trade.check,
+     'columns': _tmp_columns},
     {'name': 'cn_stock_strategy_hy_trade', 'cn': '概念', 'size': 70, 'func': hy_trade.check,
      'columns': _tmp_columns},
     {'name': 'cn_stock_strategy_limitdown_10_trade', 'cn': '跌停', 'size': 70, 'func': limitdown_10_trade.check,
@@ -397,8 +399,6 @@ TABLE_CN_STOCK_STRATEGIES = [
     {'name': 'cn_stock_strategy_largedown', 'cn': '大幅下跌5', 'size': 70, 'func': largedown.check,
      'columns': _tmp_columns},
     {'name': 'cn_stock_strategy_newstock', 'cn': '次新股', 'size': 70, 'func': newstock.check,
-     'columns': _tmp_columns},
-    {'name': 'cn_stock_strategy_lowdow60day_trade', 'cn': '60日新低', 'size': 70, 'func': lowdow60day_trade.check,
      'columns': _tmp_columns},
     {'name': 'cn_stock_strategy_increaselarge', 'cn': '大幅上涨5', 'size': 70, 'func': increaselarge.check,
      'columns': _tmp_columns},
