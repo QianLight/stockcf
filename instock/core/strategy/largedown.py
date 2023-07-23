@@ -20,7 +20,7 @@ def check(code_name, data, date=None, threshold=2):
 
     data = data.tail(n=threshold)
 
-    if data.iloc[-1]['p_change']<-5:
+    if data.iloc[-1]['p_change']<-5 and data.iloc[-1]['p_change']>-9.5:
         return True
 
     return False

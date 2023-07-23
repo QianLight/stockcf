@@ -112,6 +112,8 @@ def run_check(stocks, data_all, date, backtest_column, workers=40):
     else:
         return data
 
+    p.close()
+
 
 def main():
     prepare()

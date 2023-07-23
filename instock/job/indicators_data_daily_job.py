@@ -96,6 +96,7 @@ def run_check(stocks, date=None, workers=40):
         return None
     else:
         return data
+    p.close()
 
 
 # 对每日指标数据，进行筛选。将符合条件的。二次筛选出来。

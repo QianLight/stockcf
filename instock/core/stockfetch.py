@@ -284,6 +284,20 @@ def fetch_stock_hist(data_base,stockAllData=None, date_start=None, is_cache=True
         logging.error(f"stockfetch.fetch_stock_hist处理异常：{e}")
     return None
 
+
+def fetch_stock_hy(data_base,date_start=None, is_cache=True,next_day=None):
+    code = data_base[0][0]
+    date = date_start
+
+    if date_start is None:
+        date_start, is_cache = trd.get_trade_hist_interval(date)  # 提高运行效率，只运行一次
+    try:
+        data = stock_hy_stocks_cache(code, date_start, None, is_cache, tbs.ADJUST_TYPE,next_day)
+        return data
+    except Exception as e:
+        logging.error(f"fetch_stock_hy.fetch_stock_hist处理异常：{e}")
+    return None
+
 def fetch_stock_hist_NextDay(data,next_day):
     if next_day is None:
         return
@@ -405,4 +419,41 @@ def stock_hist_cache(code, date_start, date_end=None, is_cache=True, adjust='',n
             return stock
     except Exception as e:
         logging.error(f"stockfetch.stock_hist_cache处理异常：{code}代码{e}")
+    return None
+
+def stock_hy_stocks_cache(code, date_start, date_end=None, is_cache=True, adjust='',next_day=None):
+    if next_day is None:
+      cache_dir = os.path.join(stock_hist_cache_path, date_start[0:6], date_start)
+    else:
+      next_daystr=next_day+datetime.timedelta(days=-(365 * 3))
+      next_daystr=next_daystr.strftime("%Y%m%d")
+      cache_dir = os.path.join(stock_hist_cache_path, next_daystr[0:6], next_daystr)
+
+    # 如果没有文件夹创建一个。月文件夹和日文件夹。方便删除。
+    try:
+        if not os.path.exists(cache_dir):
+            os.makedirs(cache_dir)
+    except Exception:
+        pass
+    cache_file = os.path.join(cache_dir, "%s%s.gzip.pickle" % (code, "hy"))
+    # 如果缓存存在就直接返回缓存数据。压缩方式。
+    try:
+        if os.path.isfile(cache_file):
+            return pd.read_pickle(cache_file, compression="gzip")
+        else:
+            print(f"stock_hy_stocks_cache.From Server：future {code}")
+            stock = she.stock_hy_stocks(symbol=code)
+
+            if stock is None or len(stock.index) == 0:
+                return None
+            try:
+                if is_cache:
+                    #fetch_stock_hist_NextDay(stock, next_day)
+                    stock.to_pickle(cache_file, compression="gzip")
+            except Exception:
+                pass
+            # time.sleep(1)
+            return stock
+    except Exception as e:
+        logging.error(f"stockfetch.stock_hy_stocks 处理异常：{code}代码{e}")
     return None

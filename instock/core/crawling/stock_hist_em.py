@@ -59,8 +59,8 @@ def stock_zh_a_spot_em() -> pd.DataFrame:
     allSTCounts=allStockCounts-all30Counts-all68Counts-all8Counts-len(temp_df)
     print("所有股票数据长度:{0} 创业:{1} 科创:{2} 北交:{3} ST *ST:{5} 无ST深沪:{4}"
           .format(allStockCounts,all30Counts,all68Counts,all8Counts,len(temp_df),allSTCounts))
-    #temp_df = temp_df.drop(temp_df[(temp_df['f12'].str.startswith("002877")==False)].index)
-    #temp_df = temp_df.tail(n=1)
+    #temp_df = temp_df.drop(temp_df[(temp_df['f12'].str.startswith("600519")==False)].index)
+    #temp_df = temp_df.tail(n=100)
     #temp_df=temp_df._append(temp_df1)
     temp_df.columns = [
         "最新价",
@@ -289,13 +289,18 @@ def stock_zh_a_hist(
     adjust_dict = {"qfq": "1", "hfq": "2", "": "0"}
     period_dict = {"daily": "101", "weekly": "102", "monthly": "103"}
     url = "http://push2his.eastmoney.com/api/qt/stock/kline/get"
+
+    addSymbol="90"
+    if symbol in code_id_dict:
+        addSymbol=code_id_dict[symbol]
+
     params = {
         "fields1": "f1,f2,f3,f4,f5,f6",
         "fields2": "f51,f52,f53,f54,f55,f56,f57,f58,f59,f60,f61,f116",
         "ut": "7eea3edcaed734bea9cbfc24409ed989",
         "klt": period_dict[period],
         "fqt": adjust_dict[adjust],
-        "secid": f"{code_id_dict[symbol]}.{symbol}",
+        "secid": f"{addSymbol}.{symbol}",
         "beg": start_date,
         "end": end_date,
         "_": "1623766962675",
@@ -340,6 +345,30 @@ def stock_zh_a_hist(
     temp_df["换手率"] = pd.to_numeric(temp_df["换手率"])
 
     return temp_df
+
+
+def stock_hy_stocks(symbol):
+    url = "https://push2.eastmoney.com/api/qt/clist/get"
+    params = {
+        "np": 1,
+        "pn": 1,
+        "pz":965,
+        "fs": f"b:{symbol}",
+        "fields": "f12,f14",
+    }
+
+    r = requests.get(url, params=params)
+    data_json = r.json()
+    r.close()
+    #if not (data_json["data"] and data_json["data"]["klines"]):
+    #    return pd.DataFrame()
+
+    jsonData=data_json["data"]
+
+    temp_df = pd.DataFrame(data_json["data"]["diff"])
+    temp_df.columns =["code","name"]
+    return temp_df
+
 
 
 def stock_zh_a_hist_min_em(
@@ -548,6 +577,18 @@ if __name__ == "__main__":
         adjust="hfq",
     )
     print(stock_zh_a_hist_df)
+
+    stock_zh_a_hist_df = stock_zh_a_hist(
+        symbol="BK0477",
+        period="daily",
+        start_date="20220516",
+        end_date="20220722",
+        adjust="hfq",
+    )
+    print(stock_zh_a_hist_df)
+
+    stock_hy=stock_hy_stocks("BK0477")
+    print(stock_hy)
 
     stock_zh_a_hist_min_em_df = stock_zh_a_hist_min_em(symbol="833454", period="1")
     print(stock_zh_a_hist_min_em_df)

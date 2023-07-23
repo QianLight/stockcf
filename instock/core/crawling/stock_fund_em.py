@@ -277,7 +277,7 @@ def stock_sector_fund_flow_rank(
         temp_df.columns = [
             "-",
             "今日涨跌幅",
-            "_",
+            "代码",
             "名称",
             "今日主力净流入-净额",
             "今日超大单净流入-净额",
@@ -297,6 +297,7 @@ def stock_sector_fund_flow_rank(
 
         temp_df = temp_df[
             [
+                "代码",
                 "名称",
                 "今日涨跌幅",
                 "今日主力净流入-净额",
@@ -315,7 +316,7 @@ def stock_sector_fund_flow_rank(
     elif indicator == "5日":
         temp_df.columns = [
             "-",
-            "_",
+            "代码",
             "名称",
             "5日涨跌幅",
             "_",
@@ -336,6 +337,7 @@ def stock_sector_fund_flow_rank(
 
         temp_df = temp_df[
             [
+                "代码",
                 "名称",
                 "5日涨跌幅",
                 "5日主力净流入-净额",
@@ -354,7 +356,7 @@ def stock_sector_fund_flow_rank(
     elif indicator == "10日":
         temp_df.columns = [
             "-",
-            "_",
+            "代码",
             "名称",
             "_",
             "10日涨跌幅",
@@ -375,6 +377,7 @@ def stock_sector_fund_flow_rank(
 
         temp_df = temp_df[
             [
+                "代码",
                 "名称",
                 "10日涨跌幅",
                 "10日主力净流入-净额",

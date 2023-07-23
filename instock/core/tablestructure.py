@@ -28,10 +28,14 @@ from instock.core.strategy import cup_handle
 from instock.core.strategy import double_bottom
 from instock.core.strategy import newstock
 from instock.core.strategy import largedown
+from instock.core.strategy import limitdown_10_trade
+from instock.core.strategy import hy_trade
 __author__ = 'myh '
 __date__ = '2023/3/10 '
 
 RATE_FIELDS_COUNT = 100  # N日收益率字段数目，即N值
+
+ISHY=False
 
 ADJUST_TYPE="qfq"
 
@@ -170,7 +174,8 @@ for cf in CN_STOCK_FUND_FLOW:
 
 CN_STOCK_SECTOR_FUND_FLOW = (('行业资金流', '概念资金流'),
                              ({'name': 'stock_sector_fund_flow_rank', 'cn': '今日',
-                              'columns': {'name': {'type': NVARCHAR(30), 'cn': '名称', 'size': 70},
+                              'columns': {'code': {'type': NVARCHAR(30), 'cn': '代码', 'size': 70},
+                                          'name': {'type': NVARCHAR(30), 'cn': '名称', 'size': 70},
                                           'change_rate': {'type': FLOAT, 'cn': '今日涨跌幅', 'size': 70},
                                           'fund_amount': {'type': BIGINT, 'cn': '今日主力净流入-净额', 'size': 100},
                                           'fund_rate': {'type': FLOAT, 'cn': '今日主力净流入-净占比', 'size': 70},
@@ -184,7 +189,8 @@ CN_STOCK_SECTOR_FUND_FLOW = (('行业资金流', '概念资金流'),
                                           'fund_rate_small': {'type': FLOAT, 'cn': '今日小单净流入-净占比', 'size': 70},
                                           'stock_name': {'type': NVARCHAR(20), 'cn': '今日主力净流入最大股', 'size': 70}}},
                              {'name': 'stock_individual_fund_flow_rank', 'cn': '5日',
-                              'columns': {'name': {'type': NVARCHAR(30), 'cn': '名称', 'size': 70},
+                              'columns': {'code': {'type': NVARCHAR(30), 'cn': '代码', 'size': 70},
+                                          'name': {'type': NVARCHAR(30), 'cn': '名称', 'size': 70},
                                           'change_rate_5': {'type': FLOAT, 'cn': '5日涨跌幅', 'size': 70},
                                           'fund_amount_5': {'type': BIGINT, 'cn': '5日主力净流入-净额', 'size': 100},
                                           'fund_rate_5': {'type': FLOAT, 'cn': '5日主力净流入-净占比', 'size': 70},
@@ -198,7 +204,8 @@ CN_STOCK_SECTOR_FUND_FLOW = (('行业资金流', '概念资金流'),
                                           'fund_rate_small_5': {'type': FLOAT, 'cn': '5日小单净流入-净占比', 'size': 70},
                                           'stock_name_5': {'type': NVARCHAR(20), 'cn': '5日主力净流入最大股', 'size': 70}}},
                              {'name': 'stock_individual_fund_flow_rank', 'cn': '10日',
-                              'columns': {'name': {'type': NVARCHAR(30), 'cn': '名称', 'size': 70},
+                              'columns': {'code': {'type': NVARCHAR(30), 'cn': '代码', 'size': 70},
+                                          'name': {'type': NVARCHAR(30), 'cn': '名称', 'size': 70},
                                           'change_rate_10': {'type': FLOAT, 'cn': '10日涨跌幅', 'size': 70},
                                           'fund_amount_10': {'type': BIGINT, 'cn': '10日主力净流入-净额', 'size': 100},
                                           'fund_rate_10': {'type': FLOAT, 'cn': '10日主力净流入-净占比', 'size': 70},
@@ -383,13 +390,17 @@ TABLE_CN_STOCK_INDICATORS_SELL = {'name': 'cn_stock_indicators_sell', 'cn': '股
                                   'columns': _tmp_columns}
 
 TABLE_CN_STOCK_STRATEGIES = [
-    {'name': 'cn_stock_strategy_largedown', 'cn': '大跌', 'size': 70, 'func': largedown.check,
+    {'name': 'cn_stock_strategy_hy_trade', 'cn': '概念', 'size': 70, 'func': hy_trade.check,
+     'columns': _tmp_columns},
+    {'name': 'cn_stock_strategy_limitdown_10_trade', 'cn': '跌停', 'size': 70, 'func': limitdown_10_trade.check,
+     'columns': _tmp_columns},
+    {'name': 'cn_stock_strategy_largedown', 'cn': '大幅下跌5', 'size': 70, 'func': largedown.check,
      'columns': _tmp_columns},
     {'name': 'cn_stock_strategy_newstock', 'cn': '次新股', 'size': 70, 'func': newstock.check,
      'columns': _tmp_columns},
     {'name': 'cn_stock_strategy_lowdow60day_trade', 'cn': '60日新低', 'size': 70, 'func': lowdow60day_trade.check,
      'columns': _tmp_columns},
-    {'name': 'cn_stock_strategy_increaselarge', 'cn': '大幅上涨', 'size': 70, 'func': increaselarge.check,
+    {'name': 'cn_stock_strategy_increaselarge', 'cn': '大幅上涨5', 'size': 70, 'func': increaselarge.check,
      'columns': _tmp_columns},
     {'name': 'cn_stock_strategy_double_bottom', 'cn': '双底形态', 'size': 70, 'func': double_bottom.check,
      'columns': _tmp_columns},
