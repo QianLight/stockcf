@@ -27,7 +27,7 @@ def check(code_name, data, date=None, threshold=60):
     datayear = data.tail(360)
     data = data.tail(n=threshold)
 
-    if data.iloc[-1]['p_change']<-9.5:#当天跌停不考虑
+    if data.iloc[-1]['p_change']<-9:#当天跌停不考虑
          return False
 
     if checkHas20_30(data)==False:
