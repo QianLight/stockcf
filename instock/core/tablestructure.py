@@ -31,6 +31,7 @@ from instock.core.strategy import largedown
 from instock.core.strategy import limitdown_10_trade
 from instock.core.strategy import hy_trade
 from instock.core.strategy import early_support_position
+from instock.core.strategy import updown_frequent
 __author__ = 'myh '
 __date__ = '2023/3/10 '
 
@@ -391,6 +392,9 @@ TABLE_CN_STOCK_INDICATORS_SELL = {'name': 'cn_stock_indicators_sell', 'cn': '股
                                   'columns': _tmp_columns}
 
 TABLE_CN_STOCK_STRATEGIES = [
+    {'name': 'cn_stock_strategy_updown_frequent', 'cn': '高频大幅震荡', 'size': 70,
+     'func': updown_frequent.check,
+     'columns': _tmp_columns},
     {'name': 'cn_stock_strategy_early_support_position', 'cn': '箱体震荡', 'size': 70, 'func': early_support_position.check,
      'columns': _tmp_columns},
     {'name': 'cn_stock_strategy_lowdow60day_trade', 'cn': '60日新低', 'size': 70, 'func': lowdow60day_trade.check,
