@@ -27,7 +27,7 @@ def prepare(date, strategy):
             return
         table_name = strategy['name']
         strategy_func = strategy['func']
-        results = run_check(strategy_func, table_name, stocks_data, date)
+        results,results1 = run_check(strategy_func, table_name, stocks_data, date)
         if results is None:
             return
 
@@ -42,6 +42,7 @@ def prepare(date, strategy):
         data = pd.DataFrame(results)
         columns = tuple(tbs.TABLE_CN_STOCK_FOREIGN_KEY['columns'])
         data.columns = columns
+        data["dynamic_para"]=results1
         _columns_backtest = tuple(tbs.TABLE_CN_STOCK_BACKTEST_DATA['columns'])
         data = pd.concat([data, pd.DataFrame(columns=_columns_backtest)])
         # 单例，时间段循环必须改时间
@@ -61,6 +62,7 @@ def run_check(strategy_fun, table_name, stocks, date, workers=40):
         if stock_tops is not None:
             is_check_high_tight = True
     data = []
+    dynamicdata=[]
 
     nAllCounts=len(stocks)
     nBackIndex=0;
@@ -74,8 +76,13 @@ def run_check(strategy_fun, table_name, stocks, date, workers=40):
             for future in concurrent.futures.as_completed(future_to_data):
                 stock = future_to_data[future]
                 try:
-                    if future.result():
+                    _data_ = future.result()
+                    if _data_:
                         data.append(stock)
+                        if len(_data_)>1:
+                            dynamicdata.append(_data_[1])
+                        else:
+                            dynamicdata.append("")
 
                     nBackIndex+=1
                     #print(f"strategy_fun.Back：future {date} {stock[2]}  {nBackIndex}/ {nAllCounts}")
@@ -87,7 +94,7 @@ def run_check(strategy_fun, table_name, stocks, date, workers=40):
     if not data:
         return None
     else:
-        return data
+        return data,dynamicdata
 
 
 def main():

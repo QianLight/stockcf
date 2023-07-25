@@ -104,7 +104,8 @@ TABLE_CN_STOCK_SPOT = {'name': 'cn_stock_spot', 'cn': '每日股票数据',
                                    'total_market_cap': {'type': BIGINT, 'cn': '总市值', 'size': 120},
                                    'free_cap': {'type': BIGINT, 'cn': '流通市值', 'size': 120},
                                    'industry': {'type': NVARCHAR(20), 'cn': '所处行业', 'size': 100},
-                                   'listing_date': {'type': DATE, 'cn': '上市时间', 'size': 80}}}
+                                   'listing_date': {'type': DATE, 'cn': '上市时间', 'size': 80},
+                                   'dynamic_para': {'type': NVARCHAR(20), 'cn': '动态参数', 'size': 100}}}
 
 TABLE_CN_STOCK_SPOT_BUY = {'name': 'cn_stock_spot_buy', 'cn': '基本面选股',
                            'columns': TABLE_CN_STOCK_SPOT['columns'].copy()}
@@ -296,7 +297,8 @@ TABLE_CN_STOCK_FOREIGN_KEY = {'name': 'cn_stock_foreign_key', 'cn': '股票外�
                               'columns': {'date': {'type': DATE, 'cn': '日期', 'size': 0},
                                           'code': {'type': NVARCHAR(6), 'cn': '代码', 'size': 60},
                                           'name': {'type': NVARCHAR(20), 'cn': '名称', 'size': 70},
-                                          'industry': {'type': NVARCHAR(20), 'cn': '行业', 'size': 70}}}
+                                          'industry': {'type': NVARCHAR(20), 'cn': '行业', 'size': 70},
+                                          'dynamic_para': {'type': NVARCHAR(20), 'cn': '动态参数', 'size': 70}}}
 
 TABLE_CN_STOCK_BACKTEST_DATA = {'name': 'cn_stock_backtest_data', 'cn': '股票回归测试数据',
                                 'columns': {'rate_%s' % i: {'type': FLOAT, 'cn': '%s日收益率' % i, 'size': 100} for i in

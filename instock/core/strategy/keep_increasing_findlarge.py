@@ -42,6 +42,6 @@ def check(code_name, data, date=None, threshold=60):
 
 
     if mean5>mean10 and mean5>mean20 and mean5>mean30 and mean10>mean20:
-        return True
+        return True,code_name[2]
     else:
         return False
