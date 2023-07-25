@@ -78,7 +78,7 @@ def run_check(strategy_fun, table_name, stocks, date, workers=40):
     des_tqdm =" 策略:"+table_name
     if date is not None:
         des_tqdm = date.strftime("%Y-%m-%d") + des_tqdm
-    p = tqdm(total=nAllCounts, desc=des_tqdm)
+    #p = tqdm(total=nAllCounts, desc=des_tqdm)
 
     try:
         with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:
@@ -98,7 +98,7 @@ def run_check(strategy_fun, table_name, stocks, date, workers=40):
                             dynamicdata.append("")
 
                     nBackIndex+=1
-                    p.update(1)
+                    #p.update(1)
                     #print(f"strategy_fun.Back：future {date} {stock[2]}  {nBackIndex}/ {nAllCounts}")
 
                 except Exception as e:
@@ -106,7 +106,7 @@ def run_check(strategy_fun, table_name, stocks, date, workers=40):
     except Exception as e:
         logging.error(f"strategy_data_daily_job.run_check处理异常：{e}策略{table_name}")
 
-    p.close()
+    #p.close()
     if not data:
         return None
     else:
@@ -119,18 +119,20 @@ def main(strategyindex=-1):
         if strategyindex>=0:
             executor.submit(runt.run_with_args, prepare, tbs.TABLE_CN_STOCK_STRATEGIES[strategyindex])
         else:
-            startindex=0;
-            totalindex=len(tbs.TABLE_CN_STOCK_STRATEGIES)
-            lastexecutor = None
-            while startindex <= totalindex:
-                if lastexecutor is None:
-                    lastexecutor=executor.submit(runt.run_with_args, prepare, tbs.TABLE_CN_STOCK_STRATEGIES[startindex])
-                if lastexecutor is not None:
-                    if lastexecutor.done():
-                        startindex+=1
-                        lastexecutor = None
+            for strategy in tbs.TABLE_CN_STOCK_STRATEGIES:
+                executor.submit(runt.run_with_args, prepare, strategy)
+            #startindex=0;
+            #totalindex=len(tbs.TABLE_CN_STOCK_STRATEGIES)
+            #lastexecutor = None
+            #while startindex <= totalindex:
+            #    if lastexecutor is None:
+            #        lastexecutor=executor.submit(runt.run_with_args, prepare, tbs.TABLE_CN_STOCK_STRATEGIES[startindex])
+            #    if lastexecutor is not None:
+            #       if lastexecutor.done():
+            #            startindex+=1
+            #            lastexecutor = None
 
-                time.sleep(0.1)
+            #    time.sleep(0.1)
 
 
 # main函数入口

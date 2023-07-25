@@ -395,10 +395,11 @@ TABLE_CN_STOCK_INDICATORS_SELL = {'name': 'cn_stock_indicators_sell', 'cn': '股
                                   'columns': _tmp_columns}
 
 TABLE_CN_STOCK_STRATEGIES = [
+    {'name': 'cn_stock_strategy_keep_increasing_findlarge', 'cn': '左侧交易', 'size': 70,
+     'func': keep_increasing_findlarge.check,
+     'columns': _tmp_columns},
     {'name': 'cn_stock_strategy_early_support_position', 'cn': '箱体震荡', 'size': 70,
      'func': early_support_position.check,
-     'columns': _tmp_columns},
-    {'name': 'cn_stock_strategy_keep_increasing_findlarge', 'cn': '左侧交易', 'size': 70, 'func': keep_increasing_findlarge.check,
      'columns': _tmp_columns},
     {'name': 'cn_stock_strategy_increaselarge', 'cn': '大幅上涨5', 'size': 70, 'func': increaselarge.check,
      'columns': _tmp_columns},

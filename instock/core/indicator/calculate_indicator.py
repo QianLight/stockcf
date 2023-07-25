@@ -7,6 +7,7 @@ import numpy as np
 import talib as tl
 import os.path
 import datetime
+import threading
 import instock.core.tablestructure as tbs
 
 __author__ = 'myh '
@@ -42,15 +43,21 @@ def get_indicators(data,code, end_date=None, threshold=120, calc_threshold=None)
             data = data.tail(n=threshold).copy()
         return data
     except Exception as e:
-        logging.error(f"calculate_indicator.get_indicators 处理异常：{data['code']}代码{e}")
+        logging.error(f"calculate_indicator.get_indicators 处理异常：{code}代码{e}")
     return None
 
 allindicatorsDic={}
+
+mutex = threading.Lock()
 def get_indicatorsData(data,code):
     try:
         global allindicatorsDic
+        mutex.acquire()
         if code in allindicatorsDic:
             return allindicatorsDic[code]
+        mutex.release()
+
+        data=data.copy()
 
         now_time1 = datetime.datetime.now()
         now_date = now_time1.date().strftime("%Y%m%d")
@@ -449,7 +456,7 @@ def get_indicatorsData(data,code):
         allindicatorsDic[code]=data
         return data
     except Exception as e:
-        logging.error(f"calculate_indicator.get_indicatorsData 处理异常：{data['code']}代码{e}")
+        logging.error(f"calculate_indicator.get_indicatorsData 处理异常：{code}代码{e}")
     return None
 
 def get_indicator(code_name, data, stock_column, date=None,threshold=1, calc_threshold=90):
