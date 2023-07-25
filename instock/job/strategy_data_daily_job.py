@@ -29,9 +29,12 @@ def prepare(date, strategy):
             return
         table_name = strategy['name']
         strategy_func = strategy['func']
-        results = run_check(strategy_func, table_name, stocks_data, date)
+        results= run_check(strategy_func, table_name, stocks_data, date)
         if results is None:
             return
+
+        if type(results) == tuple:
+            results,results1=results
 
         # 删除老数据。
         if mdb.checkTableIsExist(table_name):
@@ -44,6 +47,9 @@ def prepare(date, strategy):
         data = pd.DataFrame(results)
         columns = tuple(tbs.TABLE_CN_STOCK_FOREIGN_KEY['columns'])
         data.columns = columns
+        if results1 is not None:
+           data["dynamic_para"]=results1
+
         _columns_backtest = tuple(tbs.TABLE_CN_STOCK_BACKTEST_DATA['columns'])
         data = pd.concat([data, pd.DataFrame(columns=_columns_backtest)])
         # 单例，时间段循环必须改时间
@@ -64,10 +70,14 @@ def run_check(strategy_fun, table_name, stocks, date, workers=40):
         if stock_tops is not None:
             is_check_high_tight = True
     data = []
-
+    dynamicdata=[]
     nAllCounts=len(stocks)
     nBackIndex=0;
-    #p = tqdm(total=nAllCounts, desc=date.strftime("%Y-%m-%d")+" 策略:"+strategy_fun.__name__)
+
+    des_tqdm =" 策略:"+strategy_fun.__name__
+    if date is not None:
+        des_tqdm = date.strftime("%Y-%m-%d") + des_tqdm
+    #p = tqdm(total=nAllCounts, desc=des_tqdm)
 
     try:
         with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:
@@ -78,8 +88,13 @@ def run_check(strategy_fun, table_name, stocks, date, workers=40):
             for future in concurrent.futures.as_completed(future_to_data):
                 stock = future_to_data[future]
                 try:
-                    if future.result():
+                    _data_ = future.result()
+                    if _data_:
                         data.append(stock)
+                        if type(_data_) == tuple:
+                            dynamicdata.append(_data_[1])
+                        else:
+                            dynamicdata.append("")
 
                     nBackIndex+=1
                     #p.update(1)
@@ -89,17 +104,22 @@ def run_check(strategy_fun, table_name, stocks, date, workers=40):
                     logging.error(f"strategy_data_daily_job.run_check处理异常：{stock[1]}代码{e}策略{table_name}")
     except Exception as e:
         logging.error(f"strategy_data_daily_job.run_check处理异常：{e}策略{table_name}")
+
+    #p.close()
     if not data:
         return None
     else:
-        return data
+        return data,dynamicdata
 
 
-def main():
+def main(strategyindex=-1):
     # 使用方法传递。
     with concurrent.futures.ThreadPoolExecutor() as executor:
-        for strategy in tbs.TABLE_CN_STOCK_STRATEGIES:
-            executor.submit(runt.run_with_args, prepare, strategy)
+        if strategyindex>=0:
+            executor.submit(runt.run_with_args, prepare, tbs.TABLE_CN_STOCK_STRATEGIES[strategyindex])
+        else:
+           for strategy in tbs.TABLE_CN_STOCK_STRATEGIES:
+             executor.submit(runt.run_with_args, prepare, strategy)
 
 
 # main函数入口

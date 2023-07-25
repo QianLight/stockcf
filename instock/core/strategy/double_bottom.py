@@ -27,8 +27,8 @@ def check(code_name, data, date=None, threshold=60):
     daymin=data.iloc[-1]['low']
 
     min_rebound_points = 3  # 反弹点数阈值，指反弹的连续点数
-    if find_double_bottom(data,min_rebound_points):
-        return True
+    #if find_double_bottom(data,min_rebound_points):
+    #    return True
     return False
 
 

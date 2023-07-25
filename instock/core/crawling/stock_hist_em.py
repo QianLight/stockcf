@@ -60,7 +60,7 @@ def stock_zh_a_spot_em() -> pd.DataFrame:
     print("所有股票数据长度:{0} 创业:{1} 科创:{2} 北交:{3} ST *ST:{5} 无ST深沪:{4}"
           .format(allStockCounts,all30Counts,all68Counts,all8Counts,len(temp_df),allSTCounts))
     #temp_df = temp_df.drop(temp_df[(temp_df['f12'].str.startswith("002315")==False)].index)
-    #temp_df = temp_df.tail(n=100)
+    temp_df = temp_df.tail(n=100)
     #temp_df=temp_df._append(temp_df1)
     temp_df.columns = [
         "最新价",
@@ -185,6 +185,7 @@ def stock_zh_a_spot_em() -> pd.DataFrame:
     temp_df["总市值"] = pd.to_numeric(temp_df["总市值"], errors="coerce")
     temp_df["流通市值"] = pd.to_numeric(temp_df["流通市值"], errors="coerce")
     temp_df["上市时间"] = pd.to_datetime(temp_df["上市时间"], format='%Y%m%d', errors="coerce")
+    temp_df["动态参数"]=""
 
     return temp_df
 

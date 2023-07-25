@@ -30,8 +30,8 @@ def check(code_name, data, date=None, threshold=60):
 
     cup_height_ratio = 0.2  # 杯部相对高度阈值
     handle_height_ratio = 0.1  # 柄部相对高度阈值
-    if find_cup_handle(data,cup_height_ratio,handle_height_ratio):
-        return True
+    #if find_cup_handle(data,cup_height_ratio,handle_height_ratio):
+    #    return True
     return False
 
 

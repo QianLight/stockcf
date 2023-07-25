@@ -22,8 +22,8 @@ import init_job as bj
 import self_basic_data_daily_job as hdj
 import basic_data_other_daily_job as hdtj
 import indicators_data_daily_job as gdj
-import self_strategy_data_daily_job as sdj
-import self_backtest_data_daily_job as bdj
+import strategy_data_daily_job as sdj
+import backtest_data_daily_job as bdj
 import klinepattern_data_daily_job as kdj
 
 __author__ = 'myh '
@@ -46,10 +46,10 @@ def main():
         # # # # 第4步创建股票k线形态表
         #executor.submit(kdj.main)
         # # # # 第5步创建股票策略数据表
-        executor.submit(sdj.main)
+        executor.submit(sdj.main,0)
 
     # # # # 第6步创建股票回测
-    bdj.main()
+    bdj.main(0)
 
     logging.info("######## 完成任务, 使用时间: %s 秒 #######" % (time.time() - start))
 

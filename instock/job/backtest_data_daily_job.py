@@ -24,7 +24,7 @@ __date__ = '2023/3/10 '
 
 
 # 股票策略回归测试。
-def prepare():
+def prepare(targetindex=-1):
     tables = [tbs.TABLE_CN_STOCK_INDICATORS_BUY, tbs.TABLE_CN_STOCK_INDICATORS_SELL]
     tables.extend(tbs.TABLE_CN_STOCK_STRATEGIES)
     backtest_columns = list(tbs.TABLE_CN_STOCK_BACKTEST_DATA['columns'])
@@ -41,8 +41,14 @@ def prepare():
     print(f"backtest_data_daily_job 表数量 {len(tables)}")
     # 回归测试表
     with concurrent.futures.ThreadPoolExecutor() as executor:
-        for table in tables:
-            executor.submit(process, table, stocks_data, date, backtest_column)
+
+        if targetindex>=0:
+            executor.submit(process, tables[0], stocks_data, date, backtest_column)
+            executor.submit(process, tables[1], stocks_data, date, backtest_column)
+            executor.submit(process, tables[2], stocks_data, date, backtest_column)
+        else:
+            for table in tables:
+                executor.submit(process, table, stocks_data, date, backtest_column)
 
 
 def process(table, data_all, date, backtest_column):
@@ -99,21 +105,22 @@ def run_check(stocks, data_all, date, backtest_column, workers=40):
                         data[stock] = _data_
 
                     nBackIndex+=1
-                   # p.update(1)
+                    #p.update(1)
                     #print(f"backtest_data_daily_job.Back：future {date} {stock[2]}  {nBackIndex}/ {nAllCounts}")
 
                 except Exception as e:
                     logging.error(f"backtest_data_daily_job.run_check处理异常：{stock[1]}代码{e}")
     except Exception as e:
         logging.error(f"backtest_data_daily_job.run_check处理异常：{e}")
+   # p.close()
     if not data:
         return None
     else:
         return data
 
 
-def main():
-    prepare()
+def main(targetindex=-1):
+    prepare(targetindex)
 
 
 # main函数入口
