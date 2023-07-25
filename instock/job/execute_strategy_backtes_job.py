@@ -19,7 +19,7 @@ if not os.path.exists(log_path):
 logging.basicConfig(format='%(asctime)s %(message)s', filename=os.path.join(log_path, 'stock_execute_job.log'))
 logging.getLogger().setLevel(logging.INFO)
 import init_job as bj
-import self_basic_data_daily_job as hdj
+import basic_data_daily_job as hdj
 import basic_data_other_daily_job as hdtj
 import indicators_data_daily_job as gdj
 import strategy_data_daily_job as sdj
