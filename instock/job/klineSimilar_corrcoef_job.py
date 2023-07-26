@@ -162,8 +162,8 @@ def getklineComparedata(stocks,date):
 
     isreadcsv=True
     if isreadcsv:
-       klinedata=pd.read_csv('klinesimilar.csv')
-       klinedata['code'] = klinedata['code'].astype(str)
+       klinedata=pd.read_csv('klinesimilar.csv',encoding='utf-8',converters = {'code':str})
+       #klinedata['code'] = klinedata['code'].astype(str)
        #klinedata['date'] = pd.to_datetime(klinedata['date'])
     else:
        klinedata = pd.read_sql(sql=sql, con=mdb.engine())
