@@ -33,6 +33,8 @@ from instock.core.strategy import hy_trade
 from instock.core.strategy import early_support_position
 from instock.core.strategy import updown_frequent
 from instock.core.strategy import keep_increasing_findlarge
+from instock.core.strategy import klinesimilar
+
 __author__ = 'myh '
 __date__ = '2023/3/10 '
 
@@ -395,6 +397,9 @@ TABLE_CN_STOCK_INDICATORS_SELL = {'name': 'cn_stock_indicators_sell', 'cn': '股
                                   'columns': _tmp_columns}
 
 TABLE_CN_STOCK_STRATEGIES = [
+    {'name': 'cn_stock_strategy_klinesimilar', 'cn': '形态相似', 'size': 70,
+     'func': klinesimilar.check_klinesimilar,
+     'columns': _tmp_columns},
     {'name': 'cn_stock_strategy_keep_increasing_findlarge', 'cn': '左侧交易', 'size': 70,
      'func': keep_increasing_findlarge.check,
      'columns': _tmp_columns},
@@ -584,6 +589,10 @@ TABLE_CN_STOCK_KLINE_PATTERN = {'name': 'cn_stock_pattern', 'cn': '股票K线形
 TABLE_CN_STOCK_KLINE_PATTERN['columns'].update(STOCK_KLINE_PATTERN_DATA['columns'])
 
 
+TABLE_CN_STOCK_KLINE_SIMILAR = {'name': 'cn_stock_klinesimilar', 'cn': '股票相似度',
+                                'columns': TABLE_CN_STOCK_FOREIGN_KEY['columns'].copy()}
+TABLE_CN_STOCK_KLINE_SIMILAR['columns'].update({'threshold': {'type': SmallInteger, 'cn': '计算周期', 'size': 70}})
+TABLE_CN_STOCK_KLINE_SIMILAR['columns'].update({'samecount': {'type': SmallInteger, 'cn': '相似个数', 'size': 70}})
 def get_field_cn(key, table):
     f = table.get('columns').get(key)
     if f is None:

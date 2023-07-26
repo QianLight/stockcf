@@ -40,76 +40,95 @@ def prepare(date):
         if stocks_data is None:
             return
 
-        allstocks=stocks_data.copy()
+        similardata=getKlinedata(date,stocks_data)
+        if similardata is None:
+            return
+        table_name = tbs.TABLE_CN_STOCK_KLINE_SIMILAR['name']
+        # 删除老数据。
+        if mdb.checkTableIsExist(table_name):
+            del_sql = f"DELETE FROM `{table_name}` where `date` = '{date}'"
+            mdb.executeSql(del_sql)
+            cols_type = None
+        else:
+            cols_type = tbs.get_field_types(tbs.TABLE_CN_STOCK_KLINE_SIMILAR['columns'])
 
-        similardic={}
-        similardicnone = {}
-        with concurrent.futures.ThreadPoolExecutor() as executor:
-            startindex=0;
-            leavecount=len(allstocks)
-            lastexecutor = None
-            headstock_key=None
-            threshold=60
+        data = pd.DataFrame(similardata)
+        columns = tuple(tbs.TABLE_CN_STOCK_KLINE_SIMILAR['columns'])
+        data.columns = columns
 
-            des_tqdm = " 形态分类:"
-            if date is not None:
-                des_tqdm = date.strftime("%Y-%m-%d") + des_tqdm
-            p = tqdm(total=leavecount, desc=des_tqdm)
-
-            maxvalue=1
-            minvalue=-100
-            pchangevalue=0.1
-
-            while leavecount>1:
-                if lastexecutor is None:
-                    headstock_key=list(allstocks.keys())[0]
-                    headstock_value = list(allstocks.values())[0]
-                    allstocks.pop(headstock_key)
-                    if len(headstock_value)>0:
-                       pchangevalue=headstock_value.iloc[-1]['p_change']
-                    else:
-                        print(f"klineSimilar_corrcoef_job.len 0：{date} {len(headstock_key)}")
-
-                    if len(headstock_value)>=threshold and (pchangevalue>=maxvalue or pchangevalue<=minvalue):
-                        headstock_value = headstock_value.tail(n=threshold)
-                        lastexecutor=executor.submit(run_check,headstock_key,headstock_value,allstocks,date)
-                    else:
-                        p.update(leavecount - len(allstocks))
-                        leavecount = len(allstocks)
-
-                if lastexecutor is not None:
-                   if lastexecutor.done():
-                       _data_ = lastexecutor.result()
-                       if _data_ is not None:
-                           similardic[headstock_key]=_data_
-                           [allstocks.pop(k) for k in _data_]
-                       else:
-                           if (pchangevalue>=maxvalue or pchangevalue<=minvalue):
-                              similardicnone[headstock_key] = None
-
-                       p.update(leavecount-len(allstocks))
-                       leavecount = len(allstocks)
-
-                       lastexecutor = None
-                time.sleep(0.1)
-
-        p.close()
-        print(f"klineSimilar_corrcoef_job.run_check：{date} {len(similardic)} {len(similardicnone)}")
-        #results = run_check(stocks_data)
-        #if results is None:
-        #    return
-
-        #logging.info(f"klineSimilar_corrcoef_job.run_check：{date}")
-        #return results
-        #date_start, is_cache = trd.get_trade_hist_interval(date.strftime("%Y-%m-%d"))
-
-
+        # 单例，时间段循环必须改时间
+        date_str = date.strftime("%Y-%m-%d")
+        if date.strftime("%Y-%m-%d") != data.iloc[0]['date']:
+            data['date'] = date_str
+        mdb.insert_db_from_df(data, table_name, cols_type, False, "`date`,`code`")
+        print(f"klineSimilar_corrcoef_job save to databbase：{date} 策略 {table_name}")
 
     except Exception as e:
         logging.error(f"klineSimilar_corrcoef_job.prepare处理异常：{e}")
 
+def getKlinedata(date,stocks_data,threshold=60):
+    allstocks = stocks_data.copy()
 
-def run_check(headstock_key,compareStocks,stocks, date, workers=40):
+    similar_others = []
+    similar_no_others = []
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        leavecount = len(allstocks)
+        lastexecutor = None
+        headstock_key = None
+        des_tqdm = " 形态分类:"
+        if date is not None:
+            des_tqdm = date.strftime("%Y-%m-%d") + des_tqdm
+        p = tqdm(total=leavecount, desc=des_tqdm)
+
+        maxvalue = 5
+        minvalue = -100
+        pchangevalue = 0.1
+
+        while leavecount > 1:
+            if lastexecutor is None:
+                headstock_key = list(allstocks.keys())[0]
+                headstock_value = list(allstocks.values())[0]
+                allstocks.pop(headstock_key)
+                if len(headstock_value) > 0:
+                    pchangevalue = headstock_value.iloc[-1]['p_change']
+                else:
+                    print(f"klineSimilar_corrcoef_job.len 0：{date} {len(headstock_key)}")
+
+                if len(headstock_value) >= threshold and (pchangevalue >= maxvalue or pchangevalue <= minvalue):
+                    headstock_value = headstock_value.tail(n=threshold)
+                    lastexecutor = executor.submit(run_check_klinesimilar, headstock_key, headstock_value, allstocks, date)
+                else:
+                    p.update(leavecount - len(allstocks))
+                    leavecount = len(allstocks)
+
+            if lastexecutor is not None:
+                if lastexecutor.done():
+                    _data_ = lastexecutor.result()
+                    headstock_key=list(headstock_key)
+                    headstock_key.append(threshold)
+                    if _data_ is not None:
+                        #similardic[headstock_key] = _data_
+                        headstock_key.append(len(_data_))
+                        similar_others.append(headstock_key)
+                        [allstocks.pop(k) for k in _data_]
+                    else:
+                        headstock_key.append(0)
+                        similar_no_others.append(headstock_key)
+
+                    p.update(leavecount - len(allstocks))
+                    leavecount = len(allstocks)
+
+                    lastexecutor = None
+            time.sleep(0.01)
+
+    p.close()
+    if similar_others is None:
+        return None
+
+    print(f"klineSimilar_corrcoef_job.run_check：{date} {len(similar_others)} {len(similar_no_others)}")
+    allsimilar=similar_others+(similar_no_others)
+    return allsimilar
+def run_check_klinesimilar(headstock_key,compareStocks,stocks, date, workers=40):
     data =[]
     nAllCounts=len(stocks)
     nBackIndex=0;
@@ -133,6 +152,31 @@ def run_check(headstock_key,compareStocks,stocks, date, workers=40):
     else:
         return data
 
+
+def getklineComparedata(stocks,date):
+    _columns = tuple(tbs.TABLE_CN_STOCK_KLINE_SIMILAR['columns'])
+    _selcol = '`,`'.join(_columns)
+
+    table_name = tbs.TABLE_CN_STOCK_KLINE_SIMILAR['name']
+    sql = f'''SELECT `{_selcol}` FROM `{table_name}` WHERE `date` <= '{date}' '''
+    klinedata = pd.read_sql(sql=sql, con=mdb.engine())
+    allklinedatas=[]
+    for keys,values in stocks.items():
+        code=keys[1]
+        mask = (klinedata['code'] == code)
+        itmkline = klinedata.loc[mask].copy()
+        if len(itmkline)==0:
+            continue
+
+        for idx, itmdata in itmkline.iterrows():
+            end_date = itmdata["date"].strftime("%Y-%m-%d")
+            mask = (values['date'] < end_date)
+            fitklinedata = values.loc[mask].copy()
+            fitklinedata=fitklinedata.tail(n=itmdata["threshold"])
+            fitklinedata.insert(1,"name",keys[2])
+            allklinedatas.append(fitklinedata)
+
+    return allklinedatas
 
 def MA(S,N):              #求序列的N日简单移动平均值，返回序列
     return pd.Series(S).rolling(N).mean().values
