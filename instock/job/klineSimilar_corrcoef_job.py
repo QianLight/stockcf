@@ -159,7 +159,15 @@ def getklineComparedata(stocks,date):
 
     table_name = tbs.TABLE_CN_STOCK_KLINE_SIMILAR['name']
     sql = f'''SELECT `{_selcol}` FROM `{table_name}` WHERE `date` <= '{date}' '''
-    klinedata = pd.read_sql(sql=sql, con=mdb.engine())
+
+    isreadcsv=True
+    if isreadcsv:
+       klinedata=pd.read_csv('klinesimilar.csv')
+       klinedata['code'] = klinedata['code'].astype(str)
+       #klinedata['date'] = pd.to_datetime(klinedata['date'])
+    else:
+       klinedata = pd.read_sql(sql=sql, con=mdb.engine())
+
     allklinedatas=[]
     for keys,values in stocks.items():
         code=keys[1]
@@ -169,11 +177,17 @@ def getklineComparedata(stocks,date):
             continue
 
         for idx, itmdata in itmkline.iterrows():
-            end_date = itmdata["date"].strftime("%Y-%m-%d")
+
+            if isreadcsv==False:
+               end_date = itmdata["date"].strftime("%Y-%m-%d")
+            else:
+               end_date = itmdata["date"]
+
             mask = (values['date'] < end_date)
             fitklinedata = values.loc[mask].copy()
             fitklinedata=fitklinedata.tail(n=itmdata["threshold"])
             fitklinedata.insert(1,"name",keys[2])
+            fitklinedata.insert(2, "dynamic_para", itmdata["dynamic_para"])
             allklinedatas.append(fitklinedata)
 
     return allklinedatas

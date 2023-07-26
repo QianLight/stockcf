@@ -300,7 +300,7 @@ TABLE_CN_STOCK_FOREIGN_KEY = {'name': 'cn_stock_foreign_key', 'cn': '股票外�
                                           'code': {'type': NVARCHAR(6), 'cn': '代码', 'size': 60},
                                           'name': {'type': NVARCHAR(20), 'cn': '名称', 'size': 70},
                                           'industry': {'type': NVARCHAR(20), 'cn': '行业', 'size': 70},
-                                          'dynamic_para': {'type': NVARCHAR(20), 'cn': '动态参数', 'size': 70}}}
+                                          'dynamic_para': {'type': NVARCHAR(200), 'cn': '动态参数', 'size': 70}}}
 
 TABLE_CN_STOCK_BACKTEST_DATA = {'name': 'cn_stock_backtest_data', 'cn': '股票回归测试数据',
                                 'columns': {'rate_%s' % i: {'type': FLOAT, 'cn': '%s日收益率' % i, 'size': 100} for i in

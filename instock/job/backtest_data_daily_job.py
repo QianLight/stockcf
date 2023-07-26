@@ -41,7 +41,6 @@ def prepare(targetindex=-1):
     print(f"backtest_data_daily_job 表数量 {len(tables)}")
     # 回归测试表
     with concurrent.futures.ThreadPoolExecutor() as executor:
-
         if targetindex>=0:
             executor.submit(process, tables[0], stocks_data, date, backtest_column)
             executor.submit(process, tables[1], stocks_data, date, backtest_column)
@@ -65,6 +64,7 @@ def process(table, data_all, date, backtest_column):
         if data is None or len(data.index) == 0:
             return
 
+        data['dynamic_para']=''
         subset = data[list(tbs.TABLE_CN_STOCK_FOREIGN_KEY['columns'])]
         # subset['date'] = subset['date'].values.astype('str')
         subset = subset.astype({'date': 'string'})
@@ -92,10 +92,14 @@ def run_check(stocks, data_all, date, backtest_column, workers=40):
         des_tqdm = date + des_tqdm
     #p = tqdm(total=nAllCounts, desc=des_tqdm)
 
+    #for stock in stocks:
+    #    keydata=(date, stock[1], stock[2], stock[3],stock[4])
+    #    select=data_all.get(keydata)
+    #    rate.get_rates(stock,select,backtest_column, len(backtest_column) - 1)
     try:
         with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:
             future_to_data = {executor.submit(rate.get_rates, stock,
-                                              data_all.get((date, stock[1], stock[2], stock[3])), backtest_column,
+                                              data_all.get((date, stock[1], stock[2], stock[3],stock[4])), backtest_column,
                                               len(backtest_column) - 1): stock for stock in stocks}
             for future in concurrent.futures.as_completed(future_to_data):
                 stock = future_to_data[future]
