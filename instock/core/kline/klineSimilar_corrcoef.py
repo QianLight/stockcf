@@ -39,12 +39,18 @@ def caculateCorrcoefData(data):
 
 
 def caculateCorrcoef(leftdata,rightdata):
-    open_k = np.corrcoef(leftdata['open'], rightdata['open'])[0][1]
-    close_k = np.corrcoef(leftdata['close'], rightdata['close'])[0][1]
-    high_k = np.corrcoef(leftdata['high'], rightdata['high'])[0][1]
-    low_k = np.corrcoef(leftdata['low'], rightdata['low'])[0][1]
-    ma5_k = np.corrcoef(leftdata['ma5'], rightdata['ma5'])[0][1]
-    fromhigh = np.corrcoef(leftdata['fromhigh'], rightdata['fromhigh'])[0][1]
-    fromlow = np.corrcoef(leftdata['fromlow'], rightdata['fromlow'])[0][1]
-    ave_k = (open_k + close_k + high_k + low_k + ma5_k + fromhigh + fromlow) / 7
+
+    allScore=[]
+    allScore.append(np.corrcoef(leftdata['open'], rightdata['open'])[0][1])
+    allScore.append(np.corrcoef(leftdata['close'], rightdata['close'])[0][1])
+    allScore.append( np.corrcoef(leftdata['high'], rightdata['high'])[0][1])
+    allScore.append(np.corrcoef(leftdata['low'], rightdata['low'])[0][1])
+    allScore.append(np.corrcoef(leftdata['volume'], rightdata['volume'])[0][1])
+    allScore.append(np.corrcoef(leftdata['turnover'], rightdata['turnover'])[0][1])
+    allScore.append(np.corrcoef(leftdata['amplitude'], rightdata['amplitude'])[0][1])
+    allScore.append(np.corrcoef(leftdata['p_change'], rightdata['p_change'])[0][1])
+    #allScore.append(np.corrcoef(leftdata['ma5'], rightdata['ma5'])[0][1])
+    #allScore.append(np.corrcoef(leftdata['fromhigh'], rightdata['fromhigh'])[0][1])
+    #allScore.append(np.corrcoef(leftdata['fromlow'], rightdata['fromlow'])[0][1])
+    ave_k = sum(allScore)/len(allScore)
     return ave_k

@@ -31,8 +31,8 @@ def check_klinesimilar(comparedata,code_name, data, date=None, threshold=60):
         datatoday = data.tail(n=targetlength)
         corrcoef.caculateCorrcoefData(datatoday)
         ave_k =corrcoef.caculateCorrcoef(compareStocks,datatoday)
-        if ave_k > 0.7:
+        if ave_k > 0.7 or ave_k <-0.7:
             des=compareStocks.iloc[0]["dynamic_para"]
-            dynamic_parastr=f"{round(ave_k, 2)}-{des}"
+            dynamic_parastr=f"{round(ave_k+1, 2)}-{des}"
             return True,dynamic_parastr
     return False
