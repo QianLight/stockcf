@@ -19,14 +19,32 @@ def get_klineSimilar(headstock_key,compareStocks,code_name,data,date=None, thres
         return False
 
     data = data.tail(n=threshold)
-
-    open_k = np.corrcoef(compareStocks['open'], data['open'])[0][1]
-    # /**-------------计算相关系数-------------------*/
-    close_k = np.corrcoef(compareStocks['close'], compareStocks['close'])[0][1]
-    high_k = np.corrcoef(compareStocks['high'], compareStocks['high'])[0][1]
-    low_k = np.corrcoef(compareStocks['low'], compareStocks['low'])[0][1]
-    # ma5_k = np.corrcoef(compare_ma5, ma5_o)[0][1]
-    ave_k = (open_k + close_k + high_k + low_k) / 4
+    caculateCorrcoefData(data)
+    ave_k =caculateCorrcoef(compareStocks,data)
     if ave_k > 0.95:
         return True
     return False
+def caculatema5(data):
+    if 'ma5' in data.columns:
+        return
+
+    data["ma5"] = MA(data["close"], 5)
+
+def caculateCorrcoefData(data):
+    maxvalue = data["high"].max()
+    minvalue = data["low"].min()
+    data["fromhigh"] = (maxvalue - data["low"]) / maxvalue
+    data["fromlow"] = (data["low"] - minvalue) / minvalue
+
+
+
+def caculateCorrcoef(leftdata,rightdata):
+    open_k = np.corrcoef(leftdata['open'], rightdata['open'])[0][1]
+    close_k = np.corrcoef(leftdata['close'], rightdata['close'])[0][1]
+    high_k = np.corrcoef(leftdata['high'], rightdata['high'])[0][1]
+    low_k = np.corrcoef(leftdata['low'], rightdata['low'])[0][1]
+    ma5_k = np.corrcoef(leftdata['ma5'], rightdata['ma5'])[0][1]
+    fromhigh = np.corrcoef(leftdata['fromhigh'], rightdata['fromhigh'])[0][1]
+    fromlow = np.corrcoef(leftdata['fromlow'], rightdata['fromlow'])[0][1]
+    ave_k = (open_k + close_k + high_k + low_k + ma5_k + fromhigh + fromlow) / 7
+    return ave_k

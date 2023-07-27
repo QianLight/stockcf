@@ -3,6 +3,7 @@
 
 import numpy as np
 import talib as tl
+import instock.core.kline.klineSimilar_corrcoef as corrcoef
 
 __author__ = 'myh '
 __date__ = '2023/3/10 '
@@ -21,20 +22,16 @@ def check_klinesimilar(comparedata,code_name, data, date=None, threshold=60):
     #    return False
 
     #data = data.tail(n=threshold)
+    corrcoef.caculatema5(data)
 
     for compareStocks in comparedata:
         targetlength=len(compareStocks)
         if len(data)<targetlength:
             continue
         datatoday = data.tail(n=targetlength)
-        open_k = np.corrcoef(compareStocks['open'], datatoday['open'])[0][1]
-        # /**-------------计算相关系数-------------------*/
-        close_k = np.corrcoef(compareStocks['close'], datatoday['close'])[0][1]
-        high_k = np.corrcoef(compareStocks['high'], datatoday['high'])[0][1]
-        low_k = np.corrcoef(compareStocks['low'], datatoday['low'])[0][1]
-        # ma5_k = np.corrcoef(compare_ma5, ma5_o)[0][1]
-        ave_k = (open_k + close_k + high_k + low_k) / 4
-        if ave_k > 0.5:
+        corrcoef.caculateCorrcoefData(datatoday)
+        ave_k =corrcoef.caculateCorrcoef(compareStocks,datatoday)
+        if ave_k > 0.7:
             des=compareStocks.iloc[0]["dynamic_para"]
             dynamic_parastr=f"{des}-{round(ave_k, 2)}"
             return True,dynamic_parastr

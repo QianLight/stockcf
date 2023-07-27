@@ -9,6 +9,7 @@ import os.path
 import numpy as np
 import sys
 import instock.core.crawling.stock_hist_em as she
+import instock.core.kline.klineSimilar_corrcoef as corrcoef
 import datetime
 
 #from datetime import datetime, timedelta
@@ -69,6 +70,9 @@ def prepare(date):
 def getKlinedata(date,stocks_data,threshold=60):
     allstocks = stocks_data.copy()
 
+    for keys,values in allstocks.items():
+        corrcoef.caculatema5(values)
+
     similar_others = []
     similar_no_others = []
     with concurrent.futures.ThreadPoolExecutor() as executor:
@@ -76,8 +80,9 @@ def getKlinedata(date,stocks_data,threshold=60):
         lastexecutor = None
         headstock_key = None
         des_tqdm = " 形态分类:"
+        todaystr=date.strftime("%Y-%m-%d")
         if date is not None:
-            des_tqdm = date.strftime("%Y-%m-%d") + des_tqdm
+            des_tqdm = todaystr + des_tqdm
         p = tqdm(total=leavecount, desc=des_tqdm)
 
         maxvalue = 5
@@ -89,6 +94,10 @@ def getKlinedata(date,stocks_data,threshold=60):
                 headstock_key = list(allstocks.keys())[0]
                 headstock_value = list(allstocks.values())[0]
                 allstocks.pop(headstock_key)
+
+                mask = (headstock_value['date'] <= todaystr)
+                headstock_value = headstock_value.loc[mask].copy()
+
                 if len(headstock_value) > 0:
                     pchangevalue = headstock_value.iloc[-1]['p_change']
                 else:
@@ -96,6 +105,7 @@ def getKlinedata(date,stocks_data,threshold=60):
 
                 if len(headstock_value) >= threshold and (pchangevalue >= maxvalue or pchangevalue <= minvalue):
                     headstock_value = headstock_value.tail(n=threshold)
+                    corrcoef.caculateCorrcoefData(headstock_value)
                     lastexecutor = executor.submit(run_check_klinesimilar, headstock_key, headstock_value, allstocks, date)
                 else:
                     p.update(leavecount - len(allstocks))
@@ -105,6 +115,7 @@ def getKlinedata(date,stocks_data,threshold=60):
                 if lastexecutor.done():
                     _data_ = lastexecutor.result()
                     headstock_key=list(headstock_key)
+                    headstock_key[0]=todaystr
                     headstock_key.append(threshold)
                     if _data_ is not None:
                         #similardic[headstock_key] = _data_
@@ -153,6 +164,9 @@ def run_check_klinesimilar(headstock_key,compareStocks,stocks, date, workers=40)
         return data
 
 
+#def MA(S,N):              #求序列的N日简单移动平均值，返回序列
+#    return pd.Series(S).rolling(N).mean().values
+
 def getklineComparedata(stocks,date):
     _columns = tuple(tbs.TABLE_CN_STOCK_KLINE_SIMILAR['columns'])
     _selcol = '`,`'.join(_columns)
@@ -171,13 +185,13 @@ def getklineComparedata(stocks,date):
     allklinedatas=[]
     for keys,values in stocks.items():
         code=keys[1]
+        corrcoef.caculatema5(values)
         mask = (klinedata['code'] == code)
         itmkline = klinedata.loc[mask].copy()
         if len(itmkline)==0:
             continue
 
         for idx, itmdata in itmkline.iterrows():
-
             if isreadcsv==False:
                end_date = itmdata["date"].strftime("%Y-%m-%d")
             else:
@@ -186,6 +200,8 @@ def getklineComparedata(stocks,date):
             mask = (values['date'] < end_date)
             fitklinedata = values.loc[mask].copy()
             fitklinedata=fitklinedata.tail(n=itmdata["threshold"])
+            corrcoef.caculateCorrcoefData(fitklinedata)
+
             fitklinedata.insert(1,"name",keys[2])
             fitklinedata.insert(2, "dynamic_para", itmdata["dynamic_para"])
             allklinedatas.append(fitklinedata)
