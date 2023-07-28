@@ -34,6 +34,11 @@ def check_klinesimilar(comparedata,code_name, data, date=None, threshold=60):
         if len(data)<targetlength:
             continue
         datatoday = data.tail(n=targetlength)
+        maxchange=datatoday["p_change"].max()
+
+        if maxchange<5:
+            continue
+
         corrcoef.caculateCorrcoefData(datatoday)
         ave_k =corrcoef.caculateCorrcoef(compareStocks,datatoday)
         if ave_k>maxk:
