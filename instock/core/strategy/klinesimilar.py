@@ -29,6 +29,8 @@ def check_klinesimilar(comparedata,code_name, data, date=None, threshold=60):
     desmax=""
     desmin = ""
 
+    dynamic_parastr=""
+
     for compareStocks in comparedata:
         targetlength=len(compareStocks)
         if len(data)<targetlength:
@@ -36,15 +38,15 @@ def check_klinesimilar(comparedata,code_name, data, date=None, threshold=60):
         datatoday = data.tail(n=targetlength)
         corrcoef.caculateCorrcoefData(datatoday)
         ave_k =corrcoef.caculateCorrcoef(compareStocks,datatoday)
-        if ave_k>maxk:
-            maxk=ave_k
-            desmax = compareStocks.iloc[0]["dynamic_para"]
+        desmax = compareStocks.iloc[0]["dynamic_para"]
 
-        if ave_k < mink:
-            mink=ave_k
-            desmin = compareStocks.iloc[0]["dynamic_para"]
+        if ave_k>=compareStocks.iloc[0]["maxvalue"]:
+           dynamic_parastr += f"正{round(ave_k, 2)}-{desmax}-"
 
-    if maxk > 0.7 or mink <-0.7:
-        dynamic_parastr=f"{round(maxk+1, 2)}-{desmax}-{round(mink+1, 2)}-{desmin}"
+        if ave_k<=compareStocks.iloc[0]["minvalue"]:
+           dynamic_parastr += f"负{round(ave_k, 2)}-{desmin}-"
+
+
+    if len(dynamic_parastr)>0:
         return True,dynamic_parastr
     return False

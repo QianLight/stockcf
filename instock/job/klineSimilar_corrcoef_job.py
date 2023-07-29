@@ -192,6 +192,9 @@ def getklineComparedata(stocks,date):
             continue
 
         for idx, itmdata in itmkline.iterrows():
+            if itmdata["enable"]==False:
+                continue
+
             if isreadcsv==False:
                end_date = itmdata["date"].strftime("%Y-%m-%d")
             else:
@@ -204,6 +207,9 @@ def getklineComparedata(stocks,date):
 
             fitklinedata.insert(1,"name",keys[2])
             fitklinedata.insert(2, "dynamic_para", itmdata["dynamic_para"])
+            fitklinedata.insert(2, "maxvalue", itmdata["maxvalue"])
+            fitklinedata.insert(2, "minvalue", itmdata["minvalue"])
+
             allklinedatas.append(fitklinedata)
 
     return allklinedatas
