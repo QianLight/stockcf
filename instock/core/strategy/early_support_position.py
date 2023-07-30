@@ -22,8 +22,36 @@ def check(code_name, data, date=None, threshold=60):
         data = data.tail(n=threshold)
         data.reset_index(inplace=True, drop=True)
 
-    result=checklow60(data)
+    result=checklowup10_ma(data)
     return result
+
+
+def checklowup10_ma(data):
+    mask = (data['p_change'] > 9.5)
+    dataup10 = data.loc[mask].copy()
+    if len(dataup10) < 1:
+        return False
+
+    data.loc[:, 'ma5'] = tl.MA(data['close'].values, timeperiod=5)
+    data['ma5'].values[np.isnan(data['ma5'].values)] = 0.0
+
+    data.loc[:, 'ma10'] = tl.MA(data['close'].values, timeperiod=10)
+    data['ma10'].values[np.isnan(data['ma10'].values)] = 0.0
+
+    data.loc[:, 'ma20'] = tl.MA(data['close'].values, timeperiod=20)
+    data['ma20'].values[np.isnan(data['ma20'].values)] = 0.0
+
+    data.loc[:, 'ma30'] = tl.MA(data['close'].values, timeperiod=30)
+    data['ma30'].values[np.isnan(data['ma30'].values)] = 0.0
+
+    mean5 = data.iloc[-1]['ma5']
+    mean10 = data.iloc[-1]['ma10']
+    mean20 = data.iloc[-1]['ma20']
+    mean30 = data.iloc[-1]['ma30']
+
+    if mean5>mean10 and mean5>mean20 and mean10>mean20 and mean10<mean30:
+        return True
+    return False
 
 def checklowup10(data):
     mask = (data['p_change'] >9.5)
