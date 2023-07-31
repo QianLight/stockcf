@@ -46,7 +46,7 @@ def main():
         # # # # 第4步创建股票k线形态表
         #executor.submit(kdj.main)
         # # # # 第5步创建股票策略数据表
-        executor.submit(sdj.main,0)
+        executor.submit(sdj.main)
 
     # # # # 第6步创建股票回测
     bdj.main(0)
