@@ -22,6 +22,9 @@ def check(code_name, data, date=None, threshold=60):
     if len(data.index) > 180:
         return False
 
+    if len(data)==0:
+        return False
+
     if data.iloc[-1]['p_change']>9.8:
         return True
     #mask = (data['p_change'] >9.5)
@@ -30,4 +33,4 @@ def check(code_name, data, date=None, threshold=60):
     #    return False
 
 
-    return True
+    return False
