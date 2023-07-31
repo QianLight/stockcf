@@ -48,14 +48,14 @@ def get_indicators(data,code, end_date=None, threshold=120, calc_threshold=None)
 
 allindicatorsDic={}
 
-mutex = threading.Lock()
+#mutex = threading.Lock()
 def get_indicatorsData(data,code):
     try:
         global allindicatorsDic
-        mutex.acquire()
+        #mutex.acquire()
         if code in allindicatorsDic:
             return allindicatorsDic[code]
-        mutex.release()
+       # mutex.release()
 
         data=data.copy()
 
