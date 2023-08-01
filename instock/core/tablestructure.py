@@ -592,6 +592,13 @@ TABLE_CN_STOCK_KLINE_SIMILAR = {'name': 'cn_stock_klinesimilar', 'cn': '股票�
                                 'columns': TABLE_CN_STOCK_FOREIGN_KEY['columns'].copy()}
 TABLE_CN_STOCK_KLINE_SIMILAR['columns'].update({'threshold': {'type': SmallInteger, 'cn': '计算周期', 'size': 70}})
 TABLE_CN_STOCK_KLINE_SIMILAR['columns'].update({'samecount': {'type': SmallInteger, 'cn': '相似个数', 'size': 70}})
+
+
+TABLE_CN_STOCK_LIMITUP = {'name': 'cn_stock_limitup10', 'cn': '涨停专题','columns': TABLE_CN_STOCK_FOREIGN_KEY['columns'].copy()}
+TABLE_CN_STOCK_LIMITUP['columns'].update({'limitupcount': {'type': SmallInteger, 'cn': '涨停次数', 'size': 70}})
+TABLE_CN_STOCK_LIMITUP['columns'].update({'lastdaycount': {'type': FLOAT, 'cn': '距离最近一次涨停天数', 'size': 70}})
+TABLE_CN_STOCK_LIMITUP['columns'].update({'lastlimitbeginratio': {'type': FLOAT, 'cn': '距离最近一次涨停起点点数', 'size': 70}})
+TABLE_CN_STOCK_LIMITUP['columns'].update({'limitdown10count': {'type': FLOAT, 'cn': '跌停次数', 'size': 70}})
 def get_field_cn(key, table):
     f = table.get('columns').get(key)
     if f is None:

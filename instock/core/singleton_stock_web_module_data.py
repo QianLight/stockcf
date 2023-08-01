@@ -167,6 +167,16 @@ class stock_web_module_data(metaclass=singleton_type):
             order_by=" `cdatetime` DESC"
         ), wmd.web_module_data(
             mode="query",
+            type="股票涨停专题",
+            ico="fa fa-tag",
+            name=tbs.TABLE_CN_STOCK_LIMITUP['cn'],
+            table_name=tbs.TABLE_CN_STOCK_LIMITUP['name'],
+            columns=tuple(tbs.TABLE_CN_STOCK_LIMITUP['columns']),
+            column_names=tbs.get_field_cns(tbs.TABLE_CN_STOCK_LIMITUP['columns']),
+            primary_key=[],
+            is_realtime=False
+        ),wmd.web_module_data(
+            mode="query",
             type="股票策略数据",
             ico="fa fa-check-square-o",
             name=tbs.TABLE_CN_STOCK_SPOT_BUY['cn'],
