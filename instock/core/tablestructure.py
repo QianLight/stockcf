@@ -599,6 +599,7 @@ TABLE_CN_STOCK_LIMITUP['columns'].update({'limitupcount': {'type': SmallInteger,
 TABLE_CN_STOCK_LIMITUP['columns'].update({'lastdaycount': {'type': FLOAT, 'cn': '距离最近一次涨停天数', 'size': 70}})
 TABLE_CN_STOCK_LIMITUP['columns'].update({'lastlimitbeginratio': {'type': FLOAT, 'cn': '距离最近一次涨停起点点数', 'size': 70}})
 TABLE_CN_STOCK_LIMITUP['columns'].update({'limitdown10count': {'type': FLOAT, 'cn': '跌停次数', 'size': 70}})
+TABLE_CN_STOCK_LIMITUP['columns'].update({'limitupdown': {'type': FLOAT, 'cn': '大振幅', 'size': 70}})
 def get_field_cn(key, table):
     f = table.get('columns').get(key)
     if f is None:

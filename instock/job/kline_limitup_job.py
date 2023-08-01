@@ -71,28 +71,39 @@ def getLimitUpdata(date,stocks_data,threshold=60):
     allstocks = stocks_data.copy()
     todaystr = date.strftime("%Y-%m-%d")
 
+    rangevalue=5
     alllimitupdata=[]
     for keys,values in allstocks.items():
         mask = (values['date'] <= todaystr)
         headstock_value = values.loc[mask].copy()
         mask = (headstock_value['p_change'] > 9.5)
         dataup10 = headstock_value.loc[mask].copy()
-        if len(dataup10)==0:
-            continue
+
         headstock_key = list(keys)
         headstock_key[0] = todaystr
-        headstock_key.append(len(dataup10))
 
-        indexlist=dataup10.index.tolist()
-        lastindex=indexlist[len(indexlist)-1]+1
-        headstock_key.append(len(headstock_value)-lastindex)
-        lastlimitup_low=dataup10.iloc[-1]['low']
-        ratio=round((headstock_value.iloc[-1]['low']-lastlimitup_low)/lastlimitup_low,2)
-        headstock_key.append(ratio)
+        if len(dataup10)>0:
+            headstock_key.append(len(dataup10))
+            indexlist=dataup10.index.tolist()
+            lastindex=indexlist[len(indexlist)-1]+1
+            headstock_key.append(len(headstock_value)-lastindex)
+            lastlimitup_low=dataup10.iloc[-1]['low']
+            ratio=round((headstock_value.iloc[-1]['low']-lastlimitup_low)/lastlimitup_low,2)
+            headstock_key.append(ratio)
+        else:
+            headstock_key.append(0)
+            headstock_key.append(10000)
+            headstock_key.append(0)
 
         mask = (headstock_value['p_change'] < -9.5)
         datadown10 = headstock_value.loc[mask].copy()
         headstock_key.append(len(datadown10))
+
+        mask = (headstock_value['amplitude'] > 4)
+        dataup4 = headstock_value.loc[mask].copy()
+        headstock_key.append(len(dataup4))
+
+
 
         alllimitupdata.append(headstock_key)
 
