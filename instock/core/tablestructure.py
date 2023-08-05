@@ -34,6 +34,8 @@ from instock.core.strategy import early_support_position
 from instock.core.strategy import updown_frequent
 from instock.core.strategy import keep_increasing_findlarge
 from instock.core.strategy import klinesimilar
+from instock.core.strategy import volumesignal
+
 
 __author__ = 'myh '
 __date__ = '2023/3/10 '
@@ -397,33 +399,38 @@ TABLE_CN_STOCK_INDICATORS_SELL = {'name': 'cn_stock_indicators_sell', 'cn': '股
                                   'columns': _tmp_columns}
 
 TABLE_CN_STOCK_STRATEGIES = [
-    {'name': 'cn_stock_strategy_newstock', 'cn': '次新股', 'size': 70, 'func': newstock.check,
-     'columns': _tmp_columns},
-    {'name': 'cn_stock_strategy_limitdown_10_trade', 'cn': '跌停', 'size': 70, 'func': limitdown_10_trade.check,
-     'columns': _tmp_columns},
     {'name': 'cn_stock_strategy_early_support_position', 'cn': '低位支撑位', 'size': 70,
      'func': early_support_position.check, 'columns': _tmp_columns},
-    {'name': 'cn_stock_strategy_shocklarge', 'cn': '大幅震荡', 'size': 70, 'func': shocklarge.check,
-     'columns': _tmp_columns},
-    {'name': 'cn_stock_strategy_limitup_10', 'cn': '涨停', 'size': 70, 'func': limitup_10_trade.check,
-     'columns': _tmp_columns},
+    {'name': 'cn_stock_strategy_volumesignal', 'cn': '成交量异常', 'size': 70,
+     'func': volumesignal.check, 'columns': _tmp_columns},
+    # {'name': 'cn_stock_strategy_keep_increasing_findlarge', 'cn': '左侧交易', 'size': 70,
+    #  'func': keep_increasing_findlarge.check, 'columns': _tmp_columns},
+    #
+    # {'name': 'cn_stock_strategy_keep_increasing_findlarge', 'cn': '左侧交易', 'size': 70,
+    #  'func': keep_increasing_findlarge.check, 'columns': _tmp_columns},
+    # {'name': 'cn_stock_strategy_newstock', 'cn': '次新股', 'size': 70, 'func': newstock.check,
+    #  'columns': _tmp_columns},
+    # {'name': 'cn_stock_strategy_limitdown_10_trade', 'cn': '跌停', 'size': 70, 'func': limitdown_10_trade.check,
+    #  'columns': _tmp_columns},
+    # {'name': 'cn_stock_strategy_shocklarge', 'cn': '大幅震荡', 'size': 70, 'func': shocklarge.check,
+    #  'columns': _tmp_columns},
+    # {'name': 'cn_stock_strategy_limitup_10', 'cn': '涨停', 'size': 70, 'func': limitup_10_trade.check,
+    #  'columns': _tmp_columns},
     # {'name': 'limitup_10_backred_trade', 'cn': '涨停之后红了', 'size': 70, 'func': limitup_10_trade.check,
     #  'columns': _tmp_columns},
     # {'name': 'cn_stock_strategy_klinesimilar', 'cn': '形态相似', 'size': 70,
     #  'func': klinesimilar.check_klinesimilar, 'columns': _tmp_columns},
-    {'name': 'cn_stock_strategy_keep_increasing_findlarge', 'cn': '左侧交易', 'size': 70,
-     'func': keep_increasing_findlarge.check, 'columns': _tmp_columns},
-    {'name': 'cn_stock_strategy_increaselarge', 'cn': '大幅上涨5', 'size': 70, 'func': increaselarge.check,
-     'columns': _tmp_columns},
-    {'name': 'cn_stock_strategy_updown_frequent', 'cn': '高频大幅震荡', 'size': 70,
-     'func': updown_frequent.check,
-     'columns': _tmp_columns},
-    {'name': 'cn_stock_strategy_lowdow60day_trade', 'cn': '60日新低', 'size': 70, 'func': lowdow60day_trade.check,
-     'columns': _tmp_columns},
+    # {'name': 'cn_stock_strategy_increaselarge', 'cn': '大幅上涨5', 'size': 70, 'func': increaselarge.check,
+    #  'columns': _tmp_columns},
+    # {'name': 'cn_stock_strategy_updown_frequent', 'cn': '高频大幅震荡', 'size': 70,
+    #  'func': updown_frequent.check,
+    #  'columns': _tmp_columns},
+    # {'name': 'cn_stock_strategy_lowdow60day_trade', 'cn': '60日新低', 'size': 70, 'func': lowdow60day_trade.check,
+    #  'columns': _tmp_columns},
     # {'name': 'cn_stock_strategy_hy_trade', 'cn': '概念', 'size': 70, 'func': hy_trade.check,
     #  'columns': _tmp_columns},
-    {'name': 'cn_stock_strategy_largedown', 'cn': '大幅下跌5', 'size': 70, 'func': largedown.check,
-     'columns': _tmp_columns},
+    # {'name': 'cn_stock_strategy_largedown', 'cn': '大幅下跌5', 'size': 70, 'func': largedown.check,
+    #  'columns': _tmp_columns},
     # {'name': 'cn_stock_strategy_double_bottom', 'cn': '双底形态', 'size': 70, 'func': double_bottom.check,
     #  'columns': _tmp_columns},
     # {'name': 'cn_stock_strategy_cup_handle', 'cn': '杯柄形态', 'size': 70, 'func': cup_handle.check,
@@ -451,18 +458,18 @@ TABLE_CN_STOCK_STRATEGIES = [
     #  'columns': _tmp_columns},
     # {'name': 'cn_stock_strategy_low_atr', 'cn': '低ATR成长', 'size': 70, 'func': low_atr.check_low_increase,
     #  'columns': _tmp_columns},
-    {'name': 'cn_stock_strategy_upper_shadow', 'cn': '上影线', 'size': 70, 'func': upper_shadow.check,
-     'columns': _tmp_columns},
-    {'name': 'cn_stock_strategy_reverse_benchmark', 'cn': '逆大盘', 'size': 70, 'func': reverse_benchmark.check,
-     'columns': _tmp_columns},
-    {'name': 'cn_stock_strategy_open_trade', 'cn': '开盘与当天的涨跌', 'size': 70, 'func': open_trade.check,
-     'columns': _tmp_columns},
-    {'name': 'cn_stock_strategy_updown_trade', 'cn': '上涨次数大于下跌', 'size': 70, 'func': updown_trade.check,
-     'columns': _tmp_columns},
-    {'name': 'cn_stock_strategy_mabond_trade', 'cn': '均线粘合', 'size': 70, 'func': mabond_trade.check,
-     'columns': _tmp_columns},
-    {'name': 'cn_stock_strategy_down_mabond_trade', 'cn': '均线粘合_有回踩均线需求', 'size': 70, 'func': down_mabond_trade.check,
-     'columns': _tmp_columns}
+    # {'name': 'cn_stock_strategy_upper_shadow', 'cn': '上影线', 'size': 70, 'func': upper_shadow.check,
+    #  'columns': _tmp_columns},
+    # {'name': 'cn_stock_strategy_reverse_benchmark', 'cn': '逆大盘', 'size': 70, 'func': reverse_benchmark.check,
+    #  'columns': _tmp_columns},
+    # {'name': 'cn_stock_strategy_open_trade', 'cn': '开盘与当天的涨跌', 'size': 70, 'func': open_trade.check,
+    #  'columns': _tmp_columns},
+    # {'name': 'cn_stock_strategy_updown_trade', 'cn': '上涨次数大于下跌', 'size': 70, 'func': updown_trade.check,
+    #  'columns': _tmp_columns},
+    # {'name': 'cn_stock_strategy_mabond_trade', 'cn': '均线粘合', 'size': 70, 'func': mabond_trade.check,
+    #  'columns': _tmp_columns},
+    # {'name': 'cn_stock_strategy_down_mabond_trade', 'cn': '均线粘合_有回踩均线需求', 'size': 70, 'func': down_mabond_trade.check,
+    #  'columns': _tmp_columns}
 ]
 
 STOCK_KLINE_PATTERN_DATA = {'name': 'cn_stock_pattern_recognitions', 'cn': 'K线形态',

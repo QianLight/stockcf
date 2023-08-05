@@ -18,18 +18,48 @@ def check(code_name, data, date=None, threshold=60):
         mask = (data['date'] <= end_date)
         data = data.loc[mask]
 
+    if len(data) >= 250:
+        data.loc[:, 'ma30_1'] = tl.MA(data['close'].values, timeperiod=30)
+        data['ma30_1'].values[np.isnan(data['ma30_1'].values)] = 0.0
+        data.loc[:, 'ma30_20'] = tl.MA(data['ma30_1'].values, timeperiod=20)
+        data['ma30_20'].values[np.isnan(data['ma30_20'].values)] = 0.0
+    else:
+        data.loc[:, 'ma30_20']=100000
+
     if len(data) >= threshold:
         data = data.tail(n=threshold)
         data.reset_index(inplace=True, drop=True)
 
-    result=checklowup10_ma(data)
+    result=checklowup10_volume(data)
     return result
+
+def checklowup10_volume(data,threshold=15):
+
+    if len(data) >= threshold:
+        data = data.tail(n=threshold)
+        data.reset_index(inplace=True, drop=True)
+
+    mask = (data['p_change'] > 9.5)
+    dataup10 = data.loc[mask].copy()
+
+    if len(dataup10) < 1:
+        return False
+    volume10 = dataup10.iloc[-1]['volume']
+    volume = data.iloc[-1]['volume']
+    vol_ratio = round(volume10/volume, 2)
+    if vol_ratio>=2:
+        return True,round(vol_ratio,3)
+    return False
 
 
 def checklowup10_ma(data):
     mask = (data['p_change'] > 9.5)
     dataup10 = data.loc[mask].copy()
-    if len(dataup10) < 1:
+
+    hasContinueRise=checkHasContinueRise(data,2,10)
+
+
+    if len(dataup10) < 1 and hasContinueRise==False:
         return False
 
     data.loc[:, 'ma5'] = tl.MA(data['close'].values, timeperiod=5)
@@ -44,13 +74,29 @@ def checklowup10_ma(data):
     data.loc[:, 'ma30'] = tl.MA(data['close'].values, timeperiod=30)
     data['ma30'].values[np.isnan(data['ma30'].values)] = 0.0
 
+    data.loc[:, 'ma30'] = tl.MA(data['close'].values, timeperiod=30)
+    data['ma30'].values[np.isnan(data['ma30'].values)] = 0.0
+
+    data.loc[:, 'ma60'] = tl.MA(data['close'].values, timeperiod=60)
+    data['ma60'].values[np.isnan(data['ma60'].values)] = 0.0
+
     mean5 = data.iloc[-1]['ma5']
     mean10 = data.iloc[-1]['ma10']
     mean20 = data.iloc[-1]['ma20']
     mean30 = data.iloc[-1]['ma30']
+    mean60 = data.iloc[-1]['ma60']
 
-    if mean5>mean10 and mean5>mean20 and mean10>mean20 and mean10<mean30:
-        return True
+    ma30_20 = data.iloc[-1]['ma30_20']
+
+    mean5_10 = abs(mean5 - mean10) / mean10
+    mean10_20 = abs(mean10 - mean20) / mean20
+    mean10_30 = abs(mean10 - mean30) / mean30
+    mean10_60 = abs(mean10 - mean60) / mean60
+    mean30_60 = abs(mean30 - mean60) / mean60
+
+    targetValue=0.02
+    if mean5_10<targetValue and mean10_20<targetValue and mean30_60<targetValue:
+        return True,round(mean10_30,3)
     return False
 
 def checklowup10(data):

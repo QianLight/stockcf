@@ -40,8 +40,14 @@ def check(code_name, data, date=None, threshold=60):
     mean20= data.iloc[-1]['ma20']
     mean30= data.iloc[-1]['ma30']
 
-
-    if mean5>mean10 and mean5>mean20 and mean5>mean30 and mean10>mean20:
+    if mean5>=mean10 and mean5>=mean20 and data.iloc[-2]['ma5']<=data.iloc[-2]['ma10']:
         return True,code_name[2]
     else:
         return False
+
+
+
+    #if mean5>mean10 and mean5>mean20 and mean5>mean30 and mean10>mean20:
+    #    return True,code_name[2]
+    #else:
+    #    return False

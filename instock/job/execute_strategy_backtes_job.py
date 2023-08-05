@@ -49,7 +49,7 @@ def main():
         executor.submit(sdj.main)
 
     # # # # 第6步创建股票回测
-    bdj.main(0)
+    bdj.main()
 
     logging.info("######## 完成任务, 使用时间: %s 秒 #######" % (time.time() - start))
 

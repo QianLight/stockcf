@@ -124,6 +124,31 @@ def GrowToUpByMacd(_selcol,_table_name,date):
     finaldata=pd.concat(fitdata)
     finaldata=finaldata.drop_duplicates(subset="code", keep="last")
     return finaldata
+
+def GrowToUpByKDJ(_selcol,_table_name,date):
+
+    sql = f'''SELECT `{_selcol}` FROM `{_table_name}` WHERE `date` = '{date}' and 
+            `kdjj` >= -0.001  '''
+    indicators_macd = pd.read_sql(sql=sql, con=mdb.engine())
+    indicators_macd = indicators_macd.drop_duplicates(subset="code", keep="last")
+
+    lastdate=trade_time.get_previous_trade_date(date)
+    sql = f'''SELECT `{_selcol}` FROM `{_table_name}` WHERE `date` = '{lastdate}' and 
+            `kdjj` < 0  '''
+    indicators_macd_last = pd.read_sql(sql=sql, con=mdb.engine())
+    indicators_macd_last = indicators_macd_last.drop_duplicates(subset="code", keep="last")
+
+    fitdata=[]
+
+    mask = (indicators_macd['code'] .isin(indicators_macd_last["code"].values))
+    fitdata.append(indicators_macd.loc[mask].copy())
+
+    #fitdata.append(indicators_macd_last)
+
+    finaldata=pd.concat(fitdata)
+    finaldata=finaldata.drop_duplicates(subset="code", keep="last")
+    return finaldata
+
 # 设置卖出数据。
 def guess_sell(date):
     try:
