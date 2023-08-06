@@ -94,7 +94,7 @@ def getLimitUpdata(date,stocks_data,threshold=60):
             lastindex=indexlist[len(indexlist)-1]+1
             headstock_key.append(len(headstock_value)-lastindex)
             lastlimitup_low=dataup10.iloc[-1]['low']
-            ratio=round((headstock_value.iloc[-1]['low']-lastlimitup_low)/lastlimitup_low,2)
+            ratio=round((headstock_value.iloc[-1]['low']-lastlimitup_low)/lastlimitup_low,2)*100
             headstock_key.append(ratio)
         else:
             headstock_key.append(0)
