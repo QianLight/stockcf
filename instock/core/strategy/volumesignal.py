@@ -30,13 +30,14 @@ def check(code_name, data, date=None, threshold=30):
     vol_ratio_lastday = round(data.iloc[-1]['volume'] / data.iloc[-2]['volume'], 2)
     vol_ratio_mean = round(data.iloc[-1]['volume'] / volumeav, 2)
     p_change = data.iloc[-1]['p_change']
-    if p_change < 0:
-        vol_ratio_lastday -= vol_ratio_lastday
-        vol_ratio_mean -= vol_ratio_mean
 
-    if abs(vol_ratio_lastday) >= 2:
+    if p_change < 0:
+        vol_ratio_lastday =-vol_ratio_lastday
+        vol_ratio_mean =-vol_ratio_mean
+
+    if abs(vol_ratio_lastday) >= 1.5:
         return True, vol_ratio_lastday
-    if abs(vol_ratio_mean) >= 2:
-        return True, vol_ratio_mean
+    #if abs(vol_ratio_mean) >= 2:
+    #    return True, vol_ratio_mean
     else:
         return False

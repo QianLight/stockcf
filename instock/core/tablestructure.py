@@ -399,10 +399,10 @@ TABLE_CN_STOCK_INDICATORS_SELL = {'name': 'cn_stock_indicators_sell', 'cn': '股
                                   'columns': _tmp_columns}
 
 TABLE_CN_STOCK_STRATEGIES = [
-    {'name': 'cn_stock_strategy_macd', 'cn': 'macd金叉', 'size': 70,
-     'func': macd_trade.check, 'columns': _tmp_columns},
     {'name': 'cn_stock_strategy_early_support_position', 'cn': '低位支撑位', 'size': 70,
      'func': early_support_position.check, 'columns': _tmp_columns},
+    {'name': 'cn_stock_strategy_macd', 'cn': 'macd金叉', 'size': 70,
+     'func': macd_trade.check, 'columns': _tmp_columns},
     {'name': 'cn_stock_strategy_volumesignal', 'cn': '成交量异常', 'size': 70,
      'func': volumesignal.check, 'columns': _tmp_columns},
     # {'name': 'cn_stock_strategy_keep_increasing_findlarge', 'cn': '左侧交易', 'size': 70,
@@ -414,8 +414,8 @@ TABLE_CN_STOCK_STRATEGIES = [
     #  'columns': _tmp_columns},
     # {'name': 'cn_stock_strategy_limitdown_10_trade', 'cn': '跌停', 'size': 70, 'func': limitdown_10_trade.check,
     #  'columns': _tmp_columns},
-    # {'name': 'cn_stock_strategy_shocklarge', 'cn': '大幅震荡', 'size': 70, 'func': shocklarge.check,
-    #  'columns': _tmp_columns},
+    {'name': 'cn_stock_strategy_shocklarge', 'cn': '大幅震荡', 'size': 70, 'func': shocklarge.check,
+     'columns': _tmp_columns},
     # {'name': 'cn_stock_strategy_limitup_10', 'cn': '涨停', 'size': 70, 'func': limitup_10_trade.check,
     #  'columns': _tmp_columns},
     # {'name': 'limitup_10_backred_trade', 'cn': '涨停之后红了', 'size': 70, 'func': limitup_10_trade.check,
@@ -609,6 +609,24 @@ TABLE_CN_STOCK_LIMITUP['columns'].update({'lastdaycount': {'type': FLOAT, 'cn': 
 TABLE_CN_STOCK_LIMITUP['columns'].update({'lastlimitbeginratio': {'type': FLOAT, 'cn': '距离最近一次涨停起点点数', 'size': 70}})
 TABLE_CN_STOCK_LIMITUP['columns'].update({'limitdown10count': {'type': FLOAT, 'cn': '跌停次数', 'size': 70}})
 TABLE_CN_STOCK_LIMITUP['columns'].update({'limitupdown': {'type': FLOAT, 'cn': '大振幅', 'size': 70}})
+
+TABLE_CN_STOCK_VOLUME = {'name': 'cn_stock_volumesignal', 'cn': '成交量信号','columns': TABLE_CN_STOCK_FOREIGN_KEY['columns'].copy()}
+TABLE_CN_STOCK_VOLUME['columns'].update({'ratio_lastday': {'type': FLOAT, 'cn': '与昨天的比例', 'size': 70}})
+TABLE_CN_STOCK_VOLUME['columns'].update({'ratio_max': {'type': FLOAT, 'cn': '与最大的比例', 'size': 70}})
+TABLE_CN_STOCK_VOLUME['columns'].update({'ratio_max_day': {'type': FLOAT, 'cn': '与最大距离天数', 'size': 70}})
+TABLE_CN_STOCK_VOLUME['columns'].update({'ratio_min': {'type': FLOAT, 'cn': '与最小的比例', 'size': 70}})
+TABLE_CN_STOCK_VOLUME['columns'].update({'ratio_min_day': {'type': FLOAT, 'cn': '与最小距离天数', 'size': 70}})
+
+
+TABLE_CN_STOCK_AMPLITUDE = {'name': 'cn_stock_amplitude', 'cn': '振幅专题','columns': TABLE_CN_STOCK_FOREIGN_KEY['columns'].copy()}
+TABLE_CN_STOCK_AMPLITUDE['columns'].update({'amplitude': {'type': FLOAT, 'cn': '振幅值', 'size': 70}})
+TABLE_CN_STOCK_AMPLITUDE['columns'].update({'amplitude_count5': {'type': FLOAT, 'cn': '5日振幅数量', 'size': 70}})
+TABLE_CN_STOCK_AMPLITUDE['columns'].update({'amplitude_count10': {'type': FLOAT, 'cn': '10日振幅数量', 'size': 70}})
+TABLE_CN_STOCK_AMPLITUDE['columns'].update({'amplitude_count20': {'type': FLOAT, 'cn': '20日振幅数量', 'size': 70}})
+TABLE_CN_STOCK_AMPLITUDE['columns'].update({'amplitude_count40': {'type': FLOAT, 'cn': '40日振幅数量', 'size': 70}})
+TABLE_CN_STOCK_AMPLITUDE['columns'].update({'amplitude_count80': {'type': FLOAT, 'cn': '80日振幅数量', 'size': 70}})
+TABLE_CN_STOCK_AMPLITUDE['columns'].update({'amplitude_count160': {'type': FLOAT, 'cn': '160日振幅数量', 'size': 70}})
+
 def get_field_cn(key, table):
     f = table.get('columns').get(key)
     if f is None:

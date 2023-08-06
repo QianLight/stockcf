@@ -177,6 +177,26 @@ class stock_web_module_data(metaclass=singleton_type):
             is_realtime=False
         ),wmd.web_module_data(
             mode="query",
+            type="股票成交量专题",
+            ico="fa fa-tag",
+            name=tbs.TABLE_CN_STOCK_VOLUME['cn'],
+            table_name=tbs.TABLE_CN_STOCK_VOLUME['name'],
+            columns=tuple(tbs.TABLE_CN_STOCK_VOLUME['columns']),
+            column_names=tbs.get_field_cns(tbs.TABLE_CN_STOCK_VOLUME['columns']),
+            primary_key=[],
+            is_realtime=False
+        ),wmd.web_module_data(
+            mode="query",
+            type="股票振幅专题",
+            ico="fa fa-tag",
+            name=tbs.TABLE_CN_STOCK_AMPLITUDE['cn'],
+            table_name=tbs.TABLE_CN_STOCK_AMPLITUDE['name'],
+            columns=tuple(tbs.TABLE_CN_STOCK_AMPLITUDE['columns']),
+            column_names=tbs.get_field_cns(tbs.TABLE_CN_STOCK_AMPLITUDE['columns']),
+            primary_key=[],
+            is_realtime=False
+        ),wmd.web_module_data(
+            mode="query",
             type="股票策略数据",
             ico="fa fa-check-square-o",
             name=tbs.TABLE_CN_STOCK_SPOT_BUY['cn'],

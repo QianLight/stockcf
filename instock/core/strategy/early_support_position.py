@@ -18,20 +18,47 @@ def check(code_name, data, date=None, threshold=60):
         mask = (data['date'] <= end_date)
         data = data.loc[mask]
 
-    if len(data) >= 250:
-        data.loc[:, 'ma30_1'] = tl.MA(data['close'].values, timeperiod=30)
-        data['ma30_1'].values[np.isnan(data['ma30_1'].values)] = 0.0
-        data.loc[:, 'ma30_20'] = tl.MA(data['ma30_1'].values, timeperiod=20)
-        data['ma30_20'].values[np.isnan(data['ma30_20'].values)] = 0.0
-    else:
-        data.loc[:, 'ma30_20']=100000
+    # if len(data) >= 250:
+    #     data.loc[:, 'ma30_1'] = tl.MA(data['close'].values, timeperiod=30)
+    #     data['ma30_1'].values[np.isnan(data['ma30_1'].values)] = 0.0
+    #     data.loc[:, 'ma30_20'] = tl.MA(data['ma30_1'].values, timeperiod=20)
+    #     data['ma30_20'].values[np.isnan(data['ma30_20'].values)] = 0.0
+    # else:
+    #     data.loc[:, 'ma30_20']=100000
 
     if len(data) >= threshold:
         data = data.tail(n=threshold)
         data.reset_index(inplace=True, drop=True)
 
-    result=checklowup10_volume(data)
+    result=checklowup10_indicators(data)
     return result
+
+def checklowup10_indicators(data,threshold=15):
+
+    mask = (data['p_change'] > 9.5)
+    dataup10 = data.loc[mask].copy()
+
+    if len(dataup10) < 1:
+        return False
+
+    # kdjk
+    data.loc[:, 'kdjk'], data.loc[:, 'kdjd'] = tl.STOCH(
+        data['high'].values, data['low'].values, data['close'].values, fastk_period=9,
+        slowk_period=5, slowk_matype=1, slowd_period=5, slowd_matype=1)
+    data['kdjk'].values[np.isnan(data['kdjk'].values)] = 0.0
+    data['kdjd'].values[np.isnan(data['kdjd'].values)] = 0.0
+    data.loc[:, 'kdjj'] = 3 * data['kdjk'].values - 2 * data['kdjd'].values
+
+    kdjk_today = data.iloc[-1]['kdjk']
+    kdjd_today = data.iloc[-1]['kdjd']
+
+    volume_today = data.iloc[-1]['volume']
+    volume_last = data.iloc[-2]['volume']
+    vol_ratio = round(volume_today/volume_last, 2)
+
+    if data.iloc[-1]['kdjk']>=data.iloc[-1]['kdjd'] and data.iloc[-2]['kdjk']<data.iloc[-2]['kdjd'] and vol_ratio<1.5:
+        return True,vol_ratio
+    return False
 
 def checklowup10_volume(data,threshold=15):
 
