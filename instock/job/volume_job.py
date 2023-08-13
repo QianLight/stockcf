@@ -86,7 +86,7 @@ def getVolumedata(date,stocks_data,threshold=180):
 
         p_change = headstock_value.iloc[-1]['p_change']
         if p_change<0:
-            ratio_last-=ratio_last
+            ratio_last=-ratio_last
 
         headstock_key.append(ratio_last)
 

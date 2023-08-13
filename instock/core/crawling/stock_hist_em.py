@@ -59,7 +59,7 @@ def stock_zh_a_spot_em() -> pd.DataFrame:
     allSTCounts=allStockCounts-all30Counts-all68Counts-all8Counts-len(temp_df)
     print("所有股票数据长度:{0} 创业:{1} 科创:{2} 北交:{3} ST *ST:{5} 无ST深沪:{4}"
           .format(allStockCounts,all30Counts,all68Counts,all8Counts,len(temp_df),allSTCounts))
-    #temp_df = temp_df.drop(temp_df[(temp_df['f12'].str.startswith("600728")==False)].index)
+    #temp_df = temp_df.drop(temp_df[(temp_df['f12'].str.startswith("600280")==False)].index)
     #temp_df = temp_df.head(n=10)
     #temp_df=temp_df.append(temp_df1)
     #temp_df.reset_index(drop = True,inplace = True)

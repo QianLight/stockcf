@@ -35,6 +35,7 @@ from instock.core.strategy import updown_frequent
 from instock.core.strategy import keep_increasing_findlarge
 from instock.core.strategy import klinesimilar
 from instock.core.strategy import volumesignal
+from instock.core.strategy import continue_rise
 from instock.core.strategy import macd_trade
 
 __author__ = 'myh '
@@ -399,6 +400,8 @@ TABLE_CN_STOCK_INDICATORS_SELL = {'name': 'cn_stock_indicators_sell', 'cn': '股
                                   'columns': _tmp_columns}
 
 TABLE_CN_STOCK_STRATEGIES = [
+    {'name': 'cn_stock_strategy_continue_rise', 'cn': '持续上涨', 'size': 70,
+     'func': continue_rise.check, 'columns': _tmp_columns},
     {'name': 'cn_stock_strategy_early_support_position', 'cn': '低位支撑位', 'size': 70,
      'func': early_support_position.check, 'columns': _tmp_columns},
     {'name': 'cn_stock_strategy_macd', 'cn': 'macd金叉', 'size': 70,

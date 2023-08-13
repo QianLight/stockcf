@@ -26,12 +26,43 @@ def check(code_name, data, date=None, threshold=60):
     # else:
     #     data.loc[:, 'ma30_20']=100000
 
-    if len(data) >= threshold:
-        data = data.tail(n=threshold)
-        data.reset_index(inplace=True, drop=True)
+    # if len(data) >= threshold:
+    #     data = data.tail(n=threshold)
+    #     data.reset_index(inplace=True, drop=True)
 
-    result=checklowup10_indicators(data)
+    result=checklowup10_ma(data)
     return result
+
+def checklowup10_indicators(data,threshold=15):
+    mask = (data['p_change'] > 9.5)
+    dataup10 = data.loc[mask].copy()
+
+    if len(dataup10) < 1:
+        return False
+
+    # kdjk
+    data.loc[:, 'kdjk'], data.loc[:, 'kdjd'] = tl.STOCH(
+        data['high'].values, data['low'].values, data['close'].values, fastk_period=9,
+        slowk_period=5, slowk_matype=1, slowd_period=5, slowd_matype=1)
+    data['kdjk'].values[np.isnan(data['kdjk'].values)] = 0.0
+    data['kdjd'].values[np.isnan(data['kdjd'].values)] = 0.0
+    data.loc[:, 'kdjj'] = 3 * data['kdjk'].values - 2 * data['kdjd'].values
+
+    kdjk_today = data.iloc[-1]['kdjk']
+    kdjd_today = data.iloc[-1]['kdjd']
+    kdjj_today = data.iloc[-1]['kdjj']
+
+    volume_today = data.iloc[-1]['volume']
+    volume_last = data.iloc[-2]['volume']
+    vol_ratio = round(volume_today/volume_last, 2)
+
+    kdjj_min = data['kdjj'].values.min()
+    kdjjratio_min = (kdjj_today - kdjj_min) / kdjj_min*100
+
+    #if data.iloc[-1]['kdjk']>=data.iloc[-1]['kdjd'] and data.iloc[-2]['kdjk']<data.iloc[-2]['kdjd'] and vol_ratio<1.5:
+    if kdjj_today<=kdjj_min:
+        return True,round(kdjjratio_min,3)
+    return False
 
 def checklowup10_indicators(data,threshold=15):
 
@@ -51,13 +82,33 @@ def checklowup10_indicators(data,threshold=15):
 
     kdjk_today = data.iloc[-1]['kdjk']
     kdjd_today = data.iloc[-1]['kdjd']
+    kdjj_today = data.iloc[-1]['kdjj']
 
     volume_today = data.iloc[-1]['volume']
     volume_last = data.iloc[-2]['volume']
     vol_ratio = round(volume_today/volume_last, 2)
 
-    if data.iloc[-1]['kdjk']>=data.iloc[-1]['kdjd'] and data.iloc[-2]['kdjk']<data.iloc[-2]['kdjd'] and vol_ratio<1.5:
-        return True,vol_ratio
+    #if data.iloc[-1]['kdjk']>=data.iloc[-1]['kdjd'] and data.iloc[-2]['kdjk']<data.iloc[-2]['kdjd'] and vol_ratio<1.5:
+    if kdjj_today<0:
+        return True,kdjj_today
+    return False
+
+def checklowup10_Back(data,threshold=15):
+
+    if len(data) >= threshold:
+        data = data.tail(n=threshold)
+        data.reset_index(inplace=True, drop=True)
+
+    mask = (data['p_change'] > 9.5)
+    dataup10 = data.loc[mask].copy()
+
+    if len(dataup10) < 1:
+        return False
+    volume10 = dataup10.iloc[-1]['volume']
+    volume = data.iloc[-1]['volume']
+    vol_ratio = round(volume10/volume, 2)
+    if vol_ratio>=2:
+        return True,round(vol_ratio,3)
     return False
 
 def checklowup10_volume(data,threshold=15):
@@ -92,20 +143,29 @@ def checklowup10_ma(data):
     data.loc[:, 'ma5'] = tl.MA(data['close'].values, timeperiod=5)
     data['ma5'].values[np.isnan(data['ma5'].values)] = 0.0
 
-    data.loc[:, 'ma10'] = tl.MA(data['close'].values, timeperiod=10)
-    data['ma10'].values[np.isnan(data['ma10'].values)] = 0.0
+    if len(data) >= 10:
+        data.loc[:, 'ma10'] = tl.MA(data['close'].values, timeperiod=10)
+        data['ma10'].values[np.isnan(data['ma10'].values)] = 0.0
+    else:
+        data['ma10'] = 1.0
 
-    data.loc[:, 'ma20'] = tl.MA(data['close'].values, timeperiod=20)
-    data['ma20'].values[np.isnan(data['ma20'].values)] = 0.0
+    if len(data) >= 20:
+        data.loc[:, 'ma20'] = tl.MA(data['close'].values, timeperiod=20)
+        data['ma20'].values[np.isnan(data['ma20'].values)] = 0.0
+    else:
+        data['ma20'] = 1.0
 
-    data.loc[:, 'ma30'] = tl.MA(data['close'].values, timeperiod=30)
-    data['ma30'].values[np.isnan(data['ma30'].values)] = 0.0
+    if len(data) >= 30:
+        data.loc[:, 'ma30'] = tl.MA(data['close'].values, timeperiod=30)
+        data['ma30'].values[np.isnan(data['ma30'].values)] = 0.0
+    else:
+        data['ma30']= 1.0
 
-    data.loc[:, 'ma30'] = tl.MA(data['close'].values, timeperiod=30)
-    data['ma30'].values[np.isnan(data['ma30'].values)] = 0.0
-
-    data.loc[:, 'ma60'] = tl.MA(data['close'].values, timeperiod=60)
-    data['ma60'].values[np.isnan(data['ma60'].values)] = 0.0
+    if len(data) >= 60:
+        data.loc[:, 'ma60'] = tl.MA(data['close'].values, timeperiod=60)
+        data['ma60'].values[np.isnan(data['ma60'].values)] = 0.0
+    else:
+        data['ma60'] = 1.0
 
     mean5 = data.iloc[-1]['ma5']
     mean10 = data.iloc[-1]['ma10']
@@ -113,23 +173,28 @@ def checklowup10_ma(data):
     mean30 = data.iloc[-1]['ma30']
     mean60 = data.iloc[-1]['ma60']
 
-    ma30_20 = data.iloc[-1]['ma30_20']
+    #ma30_20 = data.iloc[-1]['ma30_20']
 
     mean5_10 = abs(mean5 - mean10) / mean10
     mean10_20 = abs(mean10 - mean20) / mean20
     mean10_30 = abs(mean10 - mean30) / mean30
-    mean10_60 = abs(mean10 - mean60) / mean60
-    mean30_60 = abs(mean30 - mean60) / mean60
+    mean10_60 = abs(mean10 - mean60) / mean10*100
+   # mean30_60 = abs(mean30 - mean60) / mean60
 
     targetValue=0.02
-    if mean5_10<targetValue and mean10_20<targetValue and mean30_60<targetValue:
-        return True,round(mean10_30,3)
+    if mean5_10==0 and mean10_20<targetValue:#and mean10_30<targetValue: # and mean10_60>20:
+        return True,round(mean10_60,3)
     return False
 
-def checklowup10(data):
+def checklowup10(data,threshold=100):
+
+    if len(data) >= threshold:
+        data = data.tail(n=threshold)
+        data.reset_index(inplace=True, drop=True)
+
     mask = (data['p_change'] >9.5)
     dataup10 = data.loc[mask].copy()
-    if len(dataup10)<1:
+    if len(dataup10)<1 or len(dataup10)>3:
         return False
 
     daymin = data.iloc[-1]['low']
