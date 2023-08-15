@@ -44,20 +44,29 @@ def check(code_name, data, date=None, threshold=7):
 
     macd_today = data.iloc[-1]['macdh']
     macd_lastday = data.iloc[-2]['macdh']
+    macd_lastday3 = data.iloc[-3]['macdh']
+    macd3= data.tail(n=3)
+    macd3_std=macd3['macdh'].std()
+
+    targetvalue=0.003
+
+    if macd_today>0 and macd_lastday>0 and macd_lastday3>0 and macd3_std<targetvalue and macd_today<0.05:
+        return True
+    return False
 
     macd7 = data.tail(n=7)
     macd7_mean=macd7['macdh'].values.mean()
 
-    caculateKdj(dataweek)
-    caculateKdj(data)
+    #caculateKdj(dataweek)
+    #caculateKdj(data)
 
     kdjj_min = data['kdjj'].values.min()
     kdjd_today = data.iloc[-1]['kdjd']
     kdjk_today = data.iloc[-1]['kdjk']
     kdjj_today = data.iloc[-1]['kdjj']
 
-    kdjjratio=round((kdjj_today-kdjj_min)/kdjj_min,2)
-    return checkkdj(data)
+    #kdjjratio=round((kdjj_today-kdjj_min)/kdjj_min,2)
+    #return checkkdj(data)
     #if macd_lastday <= 0 <= macd_today:
     #    return True,macd7_mean
     #if kdjjratio<=0.1:

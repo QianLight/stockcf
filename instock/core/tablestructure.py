@@ -400,14 +400,14 @@ TABLE_CN_STOCK_INDICATORS_SELL = {'name': 'cn_stock_indicators_sell', 'cn': '股
                                   'columns': _tmp_columns}
 
 TABLE_CN_STOCK_STRATEGIES = [
-    {'name': 'cn_stock_strategy_continue_rise', 'cn': '持续上涨', 'size': 70,
-     'func': continue_rise.check, 'columns': _tmp_columns},
-    {'name': 'cn_stock_strategy_early_support_position', 'cn': '低位支撑位', 'size': 70,
-     'func': early_support_position.check, 'columns': _tmp_columns},
     {'name': 'cn_stock_strategy_macd', 'cn': 'macd金叉', 'size': 70,
      'func': macd_trade.check, 'columns': _tmp_columns},
-    {'name': 'cn_stock_strategy_volumesignal', 'cn': '成交量异常', 'size': 70,
-     'func': volumesignal.check, 'columns': _tmp_columns},
+    # {'name': 'cn_stock_strategy_continue_rise', 'cn': '持续上涨', 'size': 70,
+    #  'func': continue_rise.check, 'columns': _tmp_columns},
+    # {'name': 'cn_stock_strategy_early_support_position', 'cn': '低位支撑位', 'size': 70,
+    #  'func': early_support_position.check, 'columns': _tmp_columns},
+    # {'name': 'cn_stock_strategy_volumesignal', 'cn': '成交量异常', 'size': 70,
+    #  'func': volumesignal.check, 'columns': _tmp_columns},
     # {'name': 'cn_stock_strategy_keep_increasing_findlarge', 'cn': '左侧交易', 'size': 70,
     #  'func': keep_increasing_findlarge.check, 'columns': _tmp_columns},
     #
@@ -417,8 +417,8 @@ TABLE_CN_STOCK_STRATEGIES = [
     #  'columns': _tmp_columns},
     # {'name': 'cn_stock_strategy_limitdown_10_trade', 'cn': '跌停', 'size': 70, 'func': limitdown_10_trade.check,
     #  'columns': _tmp_columns},
-    {'name': 'cn_stock_strategy_shocklarge', 'cn': '大幅震荡', 'size': 70, 'func': shocklarge.check,
-     'columns': _tmp_columns},
+    # {'name': 'cn_stock_strategy_shocklarge', 'cn': '大幅震荡', 'size': 70, 'func': shocklarge.check,
+    #  'columns': _tmp_columns},
     # {'name': 'cn_stock_strategy_limitup_10', 'cn': '涨停', 'size': 70, 'func': limitup_10_trade.check,
     #  'columns': _tmp_columns},
     # {'name': 'limitup_10_backred_trade', 'cn': '涨停之后红了', 'size': 70, 'func': limitup_10_trade.check,

@@ -182,8 +182,10 @@ def checklowup10_ma(data):
    # mean30_60 = abs(mean30 - mean60) / mean60
 
     targetValue=0.02
-    if mean5_10==0 and mean10_20<targetValue:#and mean10_30<targetValue: # and mean10_60>20:
-        return True,round(mean10_60,3)
+    #if mean5_10==0 and mean10_20<targetValue:#and mean10_30<targetValue: # and mean10_60>20:
+    #    return True,round(mean10_60,3)
+    if mean5>=mean10 and mean10>=mean20 and mean20>=mean30 and mean30>=mean60:
+        return True
     return False
 
 def checklowup10(data,threshold=100):
