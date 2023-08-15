@@ -37,6 +37,7 @@ from instock.core.strategy import klinesimilar
 from instock.core.strategy import volumesignal
 from instock.core.strategy import continue_rise
 from instock.core.strategy import macd_trade
+from instock.core.strategy import open_high
 
 __author__ = 'myh '
 __date__ = '2023/3/10 '
@@ -400,6 +401,8 @@ TABLE_CN_STOCK_INDICATORS_SELL = {'name': 'cn_stock_indicators_sell', 'cn': '股
                                   'columns': _tmp_columns}
 
 TABLE_CN_STOCK_STRATEGIES = [
+    {'name': 'cn_stock_strategy_open_high', 'cn': '高开', 'size': 70,
+     'func': open_high.check, 'columns': _tmp_columns},
     {'name': 'cn_stock_strategy_macd', 'cn': 'macd金叉', 'size': 70,
      'func': macd_trade.check, 'columns': _tmp_columns},
     # {'name': 'cn_stock_strategy_continue_rise', 'cn': '持续上涨', 'size': 70,
