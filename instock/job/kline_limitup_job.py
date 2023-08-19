@@ -67,7 +67,7 @@ def prepare(date):
     except Exception as e:
         logging.error(f"kline_limitup_job.prepare处理异常：{e}")
 
-def getLimitUpdata(date,stocks_data,threshold=60):
+def getLimitUpdata(date,stocks_data,threshold=360):
     allstocks = stocks_data.copy()
     todaystr = date.strftime("%Y-%m-%d")
 
@@ -76,7 +76,7 @@ def getLimitUpdata(date,stocks_data,threshold=60):
     for keys,values in allstocks.items():
         mask = (values['date'] <= todaystr)
         headstock_value = values.loc[mask].copy()
-        headstock_value=headstock_value.tail(n=threshold)
+        #headstock_value=headstock_value.tail(n=threshold)
         headstock_value.reset_index(inplace=True, drop=True)
         mask = (headstock_value['p_change'] > 9.5)
         dataup10 = headstock_value.loc[mask].copy()

@@ -17,11 +17,11 @@ def check(code_name, data, date=None, threshold=60):
         mask = (data['date'] <= end_date)
         data = data.loc[mask]
 
-    daychange1 = data.iloc[-1]['p_change']
-    daychange2 = data.iloc[-2]['p_change']
-    daychange3 = data.iloc[-3]['p_change']
+    daychange1 = data.iloc[-1]['amplitude']
+    daychange2 = data.iloc[-2]['amplitude']
+    daychange3 = data.iloc[-3]['amplitude']
 
-    if daychange1>0 and daychange2>0 and daychange3<0 and (daychange1+daychange2)<10:
+    if abs(daychange1)<1 and abs(daychange2)<1 and abs(daychange3)<1:
         return True
 
     return False

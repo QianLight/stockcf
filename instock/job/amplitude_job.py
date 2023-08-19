@@ -88,6 +88,7 @@ def getAmplitudedata(date,stocks_data,threshold=160):
             amplitude_today=-amplitude_today
 
         headstock_key.append(amplitude_today)
+        headstock_key.append(headstock_value.iloc[-1]['amount'])
 
         mask = (headstock_value['amplitude'] > 5)
         amplitude5 = headstock_value.loc[mask].copy()

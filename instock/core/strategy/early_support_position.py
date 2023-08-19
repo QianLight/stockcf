@@ -30,15 +30,10 @@ def check(code_name, data, date=None, threshold=60):
     #     data = data.tail(n=threshold)
     #     data.reset_index(inplace=True, drop=True)
 
-    result=checklowup10_ma(data)
+    result=checklowup10_indicators_kdj(data)
     return result
 
-def checklowup10_indicators(data,threshold=15):
-    mask = (data['p_change'] > 9.5)
-    dataup10 = data.loc[mask].copy()
-
-    if len(dataup10) < 1:
-        return False
+def checklowup10_indicators_kdj(data,threshold=15):
 
     # kdjk
     data.loc[:, 'kdjk'], data.loc[:, 'kdjd'] = tl.STOCH(
@@ -47,6 +42,18 @@ def checklowup10_indicators(data,threshold=15):
     data['kdjk'].values[np.isnan(data['kdjk'].values)] = 0.0
     data['kdjd'].values[np.isnan(data['kdjd'].values)] = 0.0
     data.loc[:, 'kdjj'] = 3 * data['kdjk'].values - 2 * data['kdjd'].values
+
+    if len(data) >= threshold:
+        data = data.tail(n=threshold)
+        data.reset_index(inplace=True, drop=True)
+
+    mask = (data['p_change'] > 9.5)
+    dataup10 = data.loc[mask].copy()
+
+    if len(dataup10) < 1:
+        return False
+
+
 
     kdjk_today = data.iloc[-1]['kdjk']
     kdjd_today = data.iloc[-1]['kdjd']

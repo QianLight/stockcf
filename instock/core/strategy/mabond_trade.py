@@ -19,6 +19,17 @@ def check(code_name, data, date=None, threshold=180):
     if len(data.index) < threshold:
         return False
 
+    # 最后一天收盘价
+    last_close = data.iloc[-1]['close']
+    # 最后一天成交量
+    last_vol = data.iloc[-1]['volume']
+
+    amount = last_close * last_vol
+
+    # 成交额不低于2亿
+    if amount > 100000000:
+        return False
+
     data = data.tail(n=threshold)
 
     data.loc[:, 'ma5'] = tl.MA(data['close'].values, timeperiod=5)
@@ -58,13 +69,14 @@ def check(code_name, data, date=None, threshold=180):
     mean20_60 = abs(mean20 - mean60) / mean60
 
 
+    daychange1 = data.iloc[-1]['p_change']
+    daychange2 = data.iloc[-2]['p_change']
+    daychange3 = data.iloc[-3]['p_change']
     #if mean20>mean5 and
 
     targetValue=0.02
-    if abs(mean5_10) <=targetValue and  abs(mean10_20) <=targetValue and  abs(mean10_30) <=targetValue and  mean10_60 < targetValue and \
-            mean10_120 < targetValue and \
-            mean20_60 < targetValue and \
-            mean20_30<targetValue:
+    if abs(mean5_10) <=targetValue and  abs(mean10_20) <=targetValue and  abs(mean10_30) <=targetValue  and \
+            abs(mean20_30)<targetValue and daychange1>0:
         return True
     else:
        return False
