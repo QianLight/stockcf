@@ -42,6 +42,7 @@ def checklowup10_indicators_kdj(data,threshold=15):
     data['kdjk'].values[np.isnan(data['kdjk'].values)] = 0.0
     data['kdjd'].values[np.isnan(data['kdjd'].values)] = 0.0
     data.loc[:, 'kdjj'] = 3 * data['kdjk'].values - 2 * data['kdjd'].values
+    kdjj_min = data['kdjj'].values.min()
 
     if len(data) >= threshold:
         data = data.tail(n=threshold)
@@ -63,7 +64,7 @@ def checklowup10_indicators_kdj(data,threshold=15):
     volume_last = data.iloc[-2]['volume']
     vol_ratio = round(volume_today/volume_last, 2)
 
-    kdjj_min = data['kdjj'].values.min()
+
     kdjjratio_min = (kdjj_today - kdjj_min) / kdjj_min*100
 
     #if data.iloc[-1]['kdjk']>=data.iloc[-1]['kdjd'] and data.iloc[-2]['kdjk']<data.iloc[-2]['kdjd'] and vol_ratio<1.5:

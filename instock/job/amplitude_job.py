@@ -75,6 +75,7 @@ def getAmplitudedata(date,stocks_data,threshold=160):
     for keys,values in allstocks.items():
         mask = (values['date'] <= todaystr)
         headstock_value = values.loc[mask].copy()
+        allCount=len(headstock_value)
         headstock_value=headstock_value.tail(n=threshold)
         headstock_value.reset_index(inplace=True, drop=True)
 
@@ -89,6 +90,7 @@ def getAmplitudedata(date,stocks_data,threshold=160):
 
         headstock_key.append(amplitude_today)
         headstock_key.append(headstock_value.iloc[-1]['amount'])
+        headstock_key.append(allCount)
 
         mask = (headstock_value['amplitude'] > 5)
         amplitude5 = headstock_value.loc[mask].copy()

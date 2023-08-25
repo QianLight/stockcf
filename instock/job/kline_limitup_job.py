@@ -28,6 +28,7 @@ import instock.core.indicator.calculate_indicator as idr
 import instock.core.kline.klineSimilar_corrcoef as ksc
 from instock.core.singleton_stock import stock_hist_data
 import instock.lib.trade_time as trd
+from instock.lib import globaldata
 from tqdm import tqdm
 
 __author__ = 'myh '
@@ -67,7 +68,7 @@ def prepare(date):
     except Exception as e:
         logging.error(f"kline_limitup_job.prepare处理异常：{e}")
 
-def getLimitUpdata(date,stocks_data,threshold=360):
+def getLimitUpdata(date,stocks_data,threshold=90):
     allstocks = stocks_data.copy()
     todaystr = date.strftime("%Y-%m-%d")
 
@@ -76,10 +77,14 @@ def getLimitUpdata(date,stocks_data,threshold=360):
     for keys,values in allstocks.items():
         mask = (values['date'] <= todaystr)
         headstock_value = values.loc[mask].copy()
-        #headstock_value=headstock_value.tail(n=threshold)
+        globaldata.caculatekdj(headstock_value)
+        comedaycount=len(headstock_value)
+        headstock_value=headstock_value.tail(n=threshold)
         headstock_value.reset_index(inplace=True, drop=True)
         mask = (headstock_value['p_change'] > 9.5)
         dataup10 = headstock_value.loc[mask].copy()
+
+        maxallTime = headstock_value['volume'].values.max()
 
         if len(dataup10)==0:
             continue
@@ -87,6 +92,11 @@ def getLimitUpdata(date,stocks_data,threshold=360):
 
         headstock_key = list(keys)
         headstock_key[0] = todaystr
+
+        headstock_key.append(headstock_value.iloc[-1]['amount'])
+        headstock_key.append(comedaycount)
+
+        headstock_key.append(headstock_value.iloc[-1]['kdjj'])
 
         if len(dataup10)>0:
             headstock_key.append(len(dataup10))

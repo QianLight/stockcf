@@ -75,6 +75,7 @@ def getVolumedata(date,stocks_data,threshold=180):
     for keys,values in allstocks.items():
         mask = (values['date'] <= todaystr)
         headstock_value = values.loc[mask].copy()
+        allCount=len(headstock_value)
         headstock_value=headstock_value.tail(n=threshold)
         headstock_value.reset_index(inplace=True, drop=True)
 
@@ -89,6 +90,9 @@ def getVolumedata(date,stocks_data,threshold=180):
             ratio_last=-ratio_last
 
         headstock_key.append(ratio_last)
+
+        headstock_key.append(headstock_value.iloc[-1]['amount'])
+        headstock_key.append(allCount)
 
         maxallTime = headstock_value['volume'].values.max()
         daymin_max_ratio = round((volume_today-maxallTime) / volume_today, 2)
