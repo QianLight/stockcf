@@ -640,6 +640,11 @@ TABLE_CN_STOCK_AMPLITUDE['columns'].update({'amplitude_count40': {'type': FLOAT,
 TABLE_CN_STOCK_AMPLITUDE['columns'].update({'amplitude_count80': {'type': FLOAT, 'cn': '80日振幅数量', 'size': 70}})
 TABLE_CN_STOCK_AMPLITUDE['columns'].update({'amplitude_count160': {'type': FLOAT, 'cn': '160日振幅数量', 'size': 70}})
 
+
+TABLE_CN_STOCK_UPDOWN_BENCHMARK = {'name': 'cn_stock_updown_benchmark', 'cn': '跟大盘涨跌关系','columns': TABLE_CN_STOCK_FOREIGN_KEY['columns'].copy()}
+TABLE_CN_STOCK_UPDOWN_BENCHMARK['columns'].update({'sameratio': {'type': FLOAT, 'cn': '相同比例', 'size': 70}})
+TABLE_CN_STOCK_UPDOWN_BENCHMARK['columns'].update({'sameratio_up': {'type': FLOAT, 'cn': '上升相同比例', 'size': 70}})
+TABLE_CN_STOCK_UPDOWN_BENCHMARK['columns'].update({'sameratio_down': {'type': FLOAT, 'cn': '下降相同比例', 'size': 70}})
 def get_field_cn(key, table):
     f = table.get('columns').get(key)
     if f is None:

@@ -19,7 +19,7 @@ BASIC_DATA_DAILYDATA=[]
 BenchMarkData=[]
 def GetBenchMark():
     date = datetime.datetime.now().strftime("%Y-%m-%d")
-    code="510500"
+    code="510300"
 
     global BenchMarkData
     if len(BenchMarkData) == 0:
