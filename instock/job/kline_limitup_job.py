@@ -68,7 +68,7 @@ def prepare(date):
     except Exception as e:
         logging.error(f"kline_limitup_job.prepare处理异常：{e}")
 
-def getLimitUpdata(date,stocks_data,threshold=90):
+def getLimitUpdata(date,stocks_data,threshold=90*10):
     allstocks = stocks_data.copy()
     todaystr = date.strftime("%Y-%m-%d")
 

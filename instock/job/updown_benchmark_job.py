@@ -68,7 +68,7 @@ def prepare(date):
     except Exception as e:
         logging.error(f"updown_benchmark_job.prepare处理异常：{e}")
 
-def getdata(date,stocks_data,threshold=90):
+def getdata(date,stocks_data,threshold=30):
     allstocks = stocks_data.copy()
     todaystr = date.strftime("%Y-%m-%d")
 
@@ -85,6 +85,7 @@ def getdata(date,stocks_data,threshold=90):
     for keys,values in allstocks.items():
         mask = (values['date'] <= todaystr)
         headstock_value = values.loc[mask].copy()
+        headstock_value['lastclose'] = headstock_value['close'].shift()
 
         try:
             headstock_value=headstock_value.tail(n=threshold)
@@ -99,13 +100,14 @@ def getdata(date,stocks_data,threshold=90):
             mask = (headstock_value['p_change'] <= 0)
             headstock_value_down = headstock_value.loc[mask].copy()
 
-
+            ratio_up=0
             count_up=len(headstock_value_up)
             if count_up>0:
                 mask = (headstock_value_up['date'].isin(benchMarkData_up["date"].values))
                 headstock_value_up = headstock_value_up.loc[mask].copy()
                 ratio_up=(len(headstock_value_up))/count_up
 
+            ratio_down=0
             count_down = len(headstock_value_down)
             if count_down>0:
                 mask = (headstock_value_down['date'].isin(benchMarkData_down["date"].values))
@@ -116,6 +118,58 @@ def getdata(date,stocks_data,threshold=90):
             headstock_key.append(round(ratio,3)*100)
             headstock_key.append(round(ratio_up, 3) * 100)
             headstock_key.append(round(ratio_down, 3) * 100)
+
+            mask=headstock_value['open']==headstock_value['lastclose']
+            headstock_value_downlast=headstock_value.loc[mask].copy()
+            open_equal_ratio=len(headstock_value_downlast) / allCount
+
+
+            ratio=0
+            mask=headstock_value['open']<headstock_value['lastclose']
+            headstock_value_downlast=headstock_value.loc[mask].copy()
+            open_down_ratio=len(headstock_value_downlast) / allCount
+            allCountTmp=len(headstock_value_downlast)
+            mask = headstock_value['close'] < headstock_value['lastclose']
+            headstock_value_downlast = headstock_value_downlast.loc[mask].copy()
+            if allCountTmp>0:
+                ratio = (len(headstock_value_downlast)) / allCountTmp
+            headstock_key.append(round(ratio, 3) * 100)
+
+            ratio = 0
+            mask=headstock_value['open']>headstock_value['lastclose']
+            headstock_value_downlast=headstock_value.loc[mask].copy()
+            open_up_ratio = len(headstock_value_downlast) / allCount
+            allCountTmp=len(headstock_value_downlast)
+            mask = headstock_value['close'] > headstock_value['lastclose']
+            headstock_value_downlast = headstock_value_downlast.loc[mask].copy()
+            if allCountTmp>0:
+                ratio = (len(headstock_value_downlast)) / allCountTmp
+            headstock_key.append(round(ratio, 3) * 100)
+
+            ratio = 0
+            mask=headstock_value['open']<headstock_value['lastclose']
+            headstock_value_downlast=headstock_value.loc[mask].copy()
+            allCountTmp=len(headstock_value_downlast)
+            mask = headstock_value['close'] > headstock_value['lastclose']
+            headstock_value_downlast = headstock_value_downlast.loc[mask].copy()
+            if allCountTmp>0:
+                ratio = (len(headstock_value_downlast)) / allCountTmp
+            headstock_key.append(round(ratio, 3) * 100)
+
+            ratio = 0
+            mask=headstock_value['open']>headstock_value['lastclose']
+            headstock_value_downlast=headstock_value.loc[mask].copy()
+            allCountTmp=len(headstock_value_downlast)
+            mask = headstock_value['close'] < headstock_value['lastclose']
+            headstock_value_downlast = headstock_value_downlast.loc[mask].copy()
+            if allCountTmp>0:
+                ratio = (len(headstock_value_downlast)) / allCountTmp
+            headstock_key.append(round(ratio, 3) * 100)
+
+            headstock_key.append(round(open_down_ratio, 3) * 100)
+            headstock_key.append(round(open_up_ratio, 3) * 100)
+            headstock_key.append(round(open_equal_ratio, 3) * 100)
+
         except Exception as e:
             logging.error(f"updown_benchmark_jobgetdata.prepare处理异常：{e}")
         alllimitupdata.append(headstock_key)

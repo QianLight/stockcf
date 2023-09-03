@@ -470,8 +470,8 @@ TABLE_CN_STOCK_STRATEGIES = [
     #  'columns': _tmp_columns},
     # {'name': 'cn_stock_strategy_reverse_benchmark', 'cn': '逆大盘', 'size': 70, 'func': reverse_benchmark.check,
     #  'columns': _tmp_columns},
-    # {'name': 'cn_stock_strategy_open_trade', 'cn': '开盘与当天的涨跌', 'size': 70, 'func': open_trade.check,
-    #  'columns': _tmp_columns},
+    {'name': 'cn_stock_strategy_open_trade', 'cn': '开盘与当天的涨跌', 'size': 70, 'func': open_trade.check,
+     'columns': _tmp_columns},
     # {'name': 'cn_stock_strategy_updown_trade', 'cn': '上涨次数大于下跌', 'size': 70, 'func': updown_trade.check,
     #  'columns': _tmp_columns},
     {'name': 'cn_stock_strategy_mabond_trade', 'cn': '均线粘合', 'size': 70, 'func': mabond_trade.check,
@@ -645,6 +645,14 @@ TABLE_CN_STOCK_UPDOWN_BENCHMARK = {'name': 'cn_stock_updown_benchmark', 'cn': '�
 TABLE_CN_STOCK_UPDOWN_BENCHMARK['columns'].update({'sameratio': {'type': FLOAT, 'cn': '相同比例', 'size': 70}})
 TABLE_CN_STOCK_UPDOWN_BENCHMARK['columns'].update({'sameratio_up': {'type': FLOAT, 'cn': '上升相同比例', 'size': 70}})
 TABLE_CN_STOCK_UPDOWN_BENCHMARK['columns'].update({'sameratio_down': {'type': FLOAT, 'cn': '下降相同比例', 'size': 70}})
+TABLE_CN_STOCK_UPDOWN_BENCHMARK['columns'].update({'open_down_down': {'type': FLOAT, 'cn': '低开低走', 'size': 70}})
+TABLE_CN_STOCK_UPDOWN_BENCHMARK['columns'].update({'open_up_up': {'type': FLOAT, 'cn': '高开高走', 'size': 70}})
+TABLE_CN_STOCK_UPDOWN_BENCHMARK['columns'].update({'open_down_up': {'type': FLOAT, 'cn': '低开高走', 'size': 70}})
+TABLE_CN_STOCK_UPDOWN_BENCHMARK['columns'].update({'open_up_down': {'type': FLOAT, 'cn': '高开低走', 'size': 70}})
+TABLE_CN_STOCK_UPDOWN_BENCHMARK['columns'].update({'open_down_ratio': {'type': FLOAT, 'cn': '低开比例', 'size': 70}})
+TABLE_CN_STOCK_UPDOWN_BENCHMARK['columns'].update({'open_up_ratio': {'type': FLOAT, 'cn': '高开比例', 'size': 70}})
+TABLE_CN_STOCK_UPDOWN_BENCHMARK['columns'].update({'open_equal_ratio': {'type': FLOAT, 'cn': '平开比例', 'size': 70}})
+
 def get_field_cn(key, table):
     f = table.get('columns').get(key)
     if f is None:

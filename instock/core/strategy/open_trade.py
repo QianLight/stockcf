@@ -14,8 +14,8 @@ def check(code_name, data, date=None, ma_short=30, ma_long=7, threshold=60):
 
     lastClose=data.iloc[-2]['close']
 
-    if data.iloc[-1]['open']>lastClose and data.iloc[-1]['close']>lastClose:
-        return True
+    # if data.iloc[-1]['open']>lastClose and data.iloc[-1]['close']>lastClose:
+    #     return True
 
     if data.iloc[-1]['open']<lastClose and data.iloc[-1]['close']<lastClose:
         return True
