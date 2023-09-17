@@ -82,7 +82,7 @@ def getAmplitudedata(date,stocks_data,threshold=160):
         headstock_key = list(keys)
         headstock_key[0] = todaystr
 
-        amplitude_today=headstock_value.iloc[-1]['amplitude']
+        amplitude_today=headstock_value.iloc[-1]['quote_change']
 
         p_change = headstock_value.iloc[-1]['p_change']
         if p_change<0:
@@ -92,7 +92,7 @@ def getAmplitudedata(date,stocks_data,threshold=160):
         headstock_key.append(headstock_value.iloc[-1]['amount'])
         headstock_key.append(allCount)
 
-        mask = (headstock_value['amplitude'] > 5)
+        mask = (abs(headstock_value['quote_change']) > 5)
         amplitude5 = headstock_value.loc[mask].copy()
         headstock_key.append(GetDayAmplitude(headstock_value,5))
         headstock_key.append(GetDayAmplitude(headstock_value,10))
@@ -107,8 +107,7 @@ def getAmplitudedata(date,stocks_data,threshold=160):
 
 def GetDayAmplitude(data,day):
     data1=data.tail(n=day)
-    mask = (data1['amplitude'] > 5)
-    amplitude5 = data1.loc[mask].copy()
+    amplitude5 = data1[(abs(data1['quote_change']) > 5) | (abs(data1['amplitude']) > 5)]
     return len(amplitude5)
 
 def main():
