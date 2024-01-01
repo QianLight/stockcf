@@ -1,11 +1,51 @@
+https://www.debugpoint.com/install-python-3-11-ubuntu/
+
+
+安装python 3.11
+https://blog.51cto.com/u_16175470/6904997
+
+https://blog.51cto.com/u_16099330/7483408
+python版本修改
+
 
 mysql:
 
-https://zhuanlan.zhihu.com/p/632844320
-
 sudo vim /etc/mysql/my.cnf
+
+mysql -u root -p 7338701
 
 ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '7338701';
 FLUSH PRIVILEGES;
 
+
+use mysql;
+select Host,User from user;
+update user set host = '%' where user ='root';
+flush privileges;
+
+update mysql.user set authentication_string=password('7338701') where user='root' and Host='localhost';
+
+https://zhuanlan.zhihu.com/p/632844320
+
+
+
 https://www.dbs724.com/223723.html
+
+
+
+ta-lib
+
+https://blog.csdn.net/hampeter/article/details/113799342
+
+https://zhuanlan.zhihu.com/p/654299358
+
+
+
+chmod +x 
+
+
+sudo python3 -m pip install tornado
+
+sudo apt-get install python3.6-dev
+
+python3 -m pip install --upgrade pip
