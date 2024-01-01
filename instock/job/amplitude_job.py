@@ -67,7 +67,7 @@ def prepare(date):
     except Exception as e:
         logging.error(f"amplitude_job.prepare处理异常：{e}")
 
-def getAmplitudedata(date,stocks_data,threshold=160):
+def getAmplitudedata(date,stocks_data,threshold=600):
     allstocks = stocks_data.copy()
     todaystr = date.strftime("%Y-%m-%d")
 
@@ -82,32 +82,34 @@ def getAmplitudedata(date,stocks_data,threshold=160):
         headstock_key = list(keys)
         headstock_key[0] = todaystr
 
-        amplitude_today=headstock_value.iloc[-1]['quote_change']
+        amplitude_today=max(abs(headstock_value.iloc[-1]['quote_change']),abs(headstock_value.iloc[-1]['amplitude']))
 
         p_change = headstock_value.iloc[-1]['p_change']
         if p_change<0:
             amplitude_today=-amplitude_today
 
         headstock_key.append(amplitude_today)
-        headstock_key.append(headstock_value.iloc[-1]['amount'])
+        headstock_key.append(headstock_value.iloc[-1]['amount']/100000000)
         headstock_key.append(allCount)
 
-        mask = (abs(headstock_value['quote_change']) > 5)
-        amplitude5 = headstock_value.loc[mask].copy()
         headstock_key.append(GetDayAmplitude(headstock_value,5))
         headstock_key.append(GetDayAmplitude(headstock_value,10))
         headstock_key.append(GetDayAmplitude(headstock_value,20))
         headstock_key.append(GetDayAmplitude(headstock_value,40))
         headstock_key.append(GetDayAmplitude(headstock_value,80))
-        headstock_key.append(len(amplitude5))
+        #mask = (abs(headstock_value['quote_change']) > 5)
+        #amplitude5 = headstock_value.loc[mask].copy()
+        headstock_key.append(GetDayAmplitude(headstock_value,len(headstock_value)))
 
         alllimitupdata.append(headstock_key)
 
     return alllimitupdata
 
+
 def GetDayAmplitude(data,day):
+    amplitudemax = 4
     data1=data.tail(n=day)
-    amplitude5 = data1[(abs(data1['quote_change']) > 5) | (abs(data1['amplitude']) > 5)]
+    amplitude5 = data1[(abs(data1['quote_change']) > amplitudemax) | (abs(data1['amplitude']) > amplitudemax)]
     return len(amplitude5)
 
 def main():

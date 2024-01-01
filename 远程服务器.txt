@@ -1,0 +1,11 @@
+
+mysql:
+
+https://zhuanlan.zhihu.com/p/632844320
+
+sudo vim /etc/mysql/my.cnf
+
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '7338701';
+FLUSH PRIVILEGES;
+
+https://www.dbs724.com/223723.html

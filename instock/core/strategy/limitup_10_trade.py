@@ -20,7 +20,9 @@ def check(code_name, data, date=None, threshold=1):
 
     data = data.tail(n=threshold)
 
-    if data.iloc[-1]['p_change']>9.8:
+    amplitude_today = max(abs(data.iloc[-1]['quote_change']), abs(data.iloc[-1]['amplitude']))
+    p_change = data.iloc[-1]['p_change']
+    if amplitude_today>9.8 and p_change>0:
         return True
     else:
        return False

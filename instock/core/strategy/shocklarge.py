@@ -35,14 +35,19 @@ def check(code_name, data, date=None, ma_short=30, ma_long=7, threshold=60):
     amplitude=round(data.iloc[-1]['amplitude'], 2)
     p_change=round(data.iloc[-1]['p_change'], 2)
 
-    if p_change<0:
-        amplitude=-amplitude
+    amplitude5 = data[(abs(data['quote_change']) > 5) | (abs(data['amplitude']) > 5)]
 
-    #if data.iloc[-1]['quote_change']>5 and data.iloc[-1]['amplitude']>5:
-
-    desshow=f"{amplitude}:{p_change}," \
-            f"{daymin_max_ratio_day}:{daymin_max_ratio},{daymin_low_ratio_day}:{daymin_low_ratio}"
-    if abs(amplitude) > 5:
-        return True,desshow
+    datalen=len(amplitude5)
+    if datalen>2:
+        return True,datalen
+    # if p_change<0:
+    #     amplitude=-amplitude
+    #
+    # #if data.iloc[-1]['quote_change']>5 and data.iloc[-1]['amplitude']>5:
+    #
+    # desshow=f"{amplitude}:{p_change}," \
+    #         f"{daymin_max_ratio_day}:{daymin_max_ratio},{daymin_low_ratio_day}:{daymin_low_ratio}"
+    # if abs(amplitude) > 5:
+    #     return True,desshow
 
     return False

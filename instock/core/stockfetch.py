@@ -24,7 +24,7 @@ __date__ = '2023/3/10 '
 
 # 设置基础目录，每次加载使用。
 cpath_current = os.path.dirname(os.path.dirname(__file__))
-stock_hist_cache_path = os.path.join(cpath_current, 'histdata', 'hist')
+stock_hist_cache_path = os.path.join(cpath_current, '../histdata', 'hist')
 if not os.path.exists(stock_hist_cache_path):
     os.makedirs(stock_hist_cache_path)  # 创建多个文件夹结构。
 
