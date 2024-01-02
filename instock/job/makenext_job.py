@@ -32,7 +32,7 @@ def save_next_stock_data(date,next_day):
 def main():
     now_time = datetime.datetime.now()
     now_date = now_time.date()
-    next_day = now_date+datetime.timedelta(days=0)
+    next_day = now_date+datetime.timedelta(days=1)
     save_next_stock_data(now_date,next_day)
 
 

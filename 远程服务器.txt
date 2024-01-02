@@ -1,12 +1,19 @@
-https://www.debugpoint.com/install-python-3-11-ubuntu/
 
-
-安装python 3.11
-https://blog.51cto.com/u_16175470/6904997
+修改python 3.11
+https://blog.csdn.net/weixin_49503250/article/details/130294997
 
 https://blog.51cto.com/u_16099330/7483408
 python版本修改
 
+sudo apt-get install python3.11-dev
+
+
+# 重新安装python3-apt
+sudo apt remove python3-apt
+sudo apt autoremove  # 此命令慎用，可以先不输入它，看能否解决问题
+sudo apt autoclean
+sudo apt install python3-apt
+https://blog.csdn.net/StillOnMyWay/article/details/114492675
 
 mysql:
 
@@ -27,6 +34,7 @@ update mysql.user set authentication_string=password('7338701') where user='root
 
 https://zhuanlan.zhihu.com/p/632844320
 
+service mysql restart
 
 
 https://www.dbs724.com/223723.html
@@ -34,6 +42,7 @@ https://www.dbs724.com/223723.html
 
 
 ta-lib
+https://cloudstrata.io/install-ta-lib-on-ubuntu-server/
 
 https://blog.csdn.net/hampeter/article/details/113799342
 
@@ -46,6 +55,19 @@ chmod +x
 
 sudo python3 -m pip install tornado
 
-sudo apt-get install python3.6-dev
+
 
 python3 -m pip install --upgrade pip
+
+pip install bokeh==3.2.1
+
+
+
+
+
+
+
+https://www.debugpoint.com/install-python-3-11-ubuntu/
+
+安装python 3.11
+https://blog.51cto.com/u_16175470/6904997
